@@ -4,10 +4,6 @@
 var _modules = require("./modules");
 
 console.log("Main.js executed!");
-console.log(document);
-console.log((0, _modules.Sigma)(0, 100, function (x) {
-  return x;
-}));
 document.getElementById("sumof").innerHTML = (0, _modules.Sigma)(0, 100, function (x) {
   return x;
 });
