@@ -1,0 +1,28 @@
+{
+  "name": "WebGL-Cursor-Storm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+	"build-debug": "browserify src/main.js -t babelify --outfile dist/bundle.js",
+	"build": "npm run build-debug",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/qm-cam-offer-holders/WebGL-Cursor-Storm.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/qm-cam-offer-holders/WebGL-Cursor-Storm/issues"
+  },
+  "homepage": "https://gitlab.com/qm-cam-offer-holders/WebGL-Cursor-Storm#README",
+  "devDependencies": {
+    "babel-eslint": "^7.2.3",
+    "babel-preset-env": "^1.6.0",
+    "babelify": "^7.3.0",
+    "eslint": "^3.19.0"
+  }
+}
