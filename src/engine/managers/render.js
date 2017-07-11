@@ -1,5 +1,10 @@
 import {Base} from '../base'
 
+import {EntityShader} from '../shader'
+import EntShaderVSrc from '../shaders/Entity.v.glsl';
+import EntShaderFSrc from '../shaders/Entity.f.glsl';
+
+
 import * as glm from 'gl-matrix'
 
 
@@ -15,13 +20,26 @@ class Pipeline extends Base
 	}
 
 	GetProjectionMatrix(w, h) { return null; }
-	GetViewMatrix() { return null; }
+	GetViewMatrix()
+	{
+		let w = this.core.Render.displayWidth;
+		let h = this.core.Render.displayHeight;
+		let V = glm.mat3.create();
+
+		glm.mat3.scale(V, V, [-1/w,  1/h]);
+		//glm.mat3.translate(V, V, [w/2 , h/2]);
+		//glm.mat3.transpose(V, V);
+		return V
+	}
 	GetModelMatrix(loc, rad, scale)
 	{
 		let M = glm.mat3.create();
+
 		glm.mat3.translate(M, M, loc);
 		glm.mat3.rotate(M, M, rad);
 		glm.mat3.scale(M, M, scale);
+
+		return M;
 	}
 }
 
@@ -30,7 +48,7 @@ class Render extends Base
 	constructor()
 	{
 		super();
-		this.pipeline = new Pipeline();
+		this.pipeline = null;
 		this.canvasid = null;
 		this.canvas = null;
 		this.gl = null;
@@ -47,8 +65,7 @@ class Render extends Base
 
 		try
 		{
-			this.gl =  this.canvas.getContext("webgl2")
-					|| this.canvas.getContext("webgl");
+			this.gl =  this.canvas.getContext("webgl");
 		}
 		catch(e)
 		{
@@ -57,9 +74,16 @@ class Render extends Base
 		}
 
 		let gl = this.gl;
-		gl.clearColor(0.0, 0.0, 0.0, 1.0);
+
+		this.pipeline = this.CreateObject(Pipeline);
+
+		this.core.Resource.LoadShader("ShaderEntity", EntShaderVSrc, EntShaderFSrc, EntityShader);
+
 		gl.enable(gl.DEPTH_TEST);
 		gl.depthFunc(gl.LEQUAL);
+
+		gl.enable(gl.BLEND);
+		gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
 
 		this.ResizeViewport();
 	}
@@ -80,10 +104,13 @@ class Render extends Base
 	RenderClear()
 	{
 		let gl = this.gl;
-		gl.clearColor(0.5, 0.5, 0.5, 1.0);
+		gl.clearColor(0.05, 0.05, 0.05, 1.0);
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	}
 
-	RenderPresent(){}
+	RenderPresent()
+	{
+
+	}
 }
 export {BASIS_VECTOR, Render};

@@ -3,6 +3,7 @@ import {Base} from './base'
 import {Input} from './managers/input'
 import {Render} from './managers/render'
 import {Resource} from './managers/resource'
+import {Scene} from './managers/scene'
 
 class Core extends Base
 {
@@ -20,6 +21,14 @@ class Core extends Base
 		this.StartTime = this.GetTime();
 		this.LastUpdate = this.StartTime;
 
+		console.info("Create Manager: Scene");
+		this.Scene = this.CreateObject(Scene);
+
+
+		console.info("Create Manager: Resource");
+		this.Resource = this.CreateObject(Resource);
+		this.Resource.BeginPlay();
+
 		console.info("Create Manager: Input");
 		this.Input = this.CreateObject(Input);
 		this.Input.BeginPlay();
@@ -28,10 +37,6 @@ class Core extends Base
 		this.Render = this.CreateObject(Render);
 		this.Render.canvasid = args.canvasid;
 		this.Render.BeginPlay();
-
-		console.info("Create Manager: Resource");
-		this.Resource = this.CreateObject(Resource);
-		this.Resource.BeginPlay();
 
 		this.BeginPlay();
 		this.MainLoop();
@@ -46,6 +51,8 @@ class Core extends Base
 		this.Render.RenderClear();
 
 		this.Input.Tick(dt);
+		this.Tick(dt);
+		this.Scene.Tick(dt);
 
 		this.Render.RenderPresent();
 
@@ -53,5 +60,6 @@ class Core extends Base
 	}
 
 	BeginPlay(){}
+	Tick(dt){}
 }
 export {Core};

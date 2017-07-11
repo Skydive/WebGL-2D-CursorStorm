@@ -1,5 +1,16 @@
-- Hello MemeWorld!
-ee
-Testing...
+# Cursor Storm
+A really crappy WebGL game
 
-Testing...
+### Setup
+`npm install`
+
+### Build
+`npm run webpack`
+
+## Build & Execute
+`npm run electron`
+
+## Helpful Atom Plugins
+- git-plus
+- file-icons
+- minimap

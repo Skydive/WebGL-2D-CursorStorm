@@ -1,4 +1,3 @@
-.gitignore
 .gitconfig
 node_modules
 .eslintrc
