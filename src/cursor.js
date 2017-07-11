@@ -1,7 +1,5 @@
 import {Entity} from './engine/entity'
 
-
-
 class Cursor extends Entity
 {
 	constructor()
@@ -86,7 +84,6 @@ class Cursor extends Entity
 
 		this.Velocity[0] *= 1 - 0.7*dt;
 		this.Velocity[1] *= 1 - 0.7*dt;
-		console.log(this.Location);
 	}
 
 	DrawTexture(x, y, r, xs, ys, tex)

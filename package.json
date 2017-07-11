@@ -18,6 +18,7 @@
     "babel-core": "^6.25.0",
     "babel-eslint": "^7.2.3",
     "babel-loader": "^7.1.1",
+    "babel-preset-env": "^1.6.0",
     "electron": "^1.6.11",
     "eslint": "^3.19.0",
     "gl-matrix": "^2.3.2",
@@ -28,7 +29,7 @@
   "scripts": {
     "transpile": "webpack --progress --colors",
     "local": "electron electron.js",
-	"sync": "rsync -avz ./ khalid@192.168.0.4:/home/khalid/public_html/WebGL-Cursor-Storm/ --exclude 'node_modules/'",
-	"watch": "webpack --progress --colors --watch"
+    "sync": "rsync -avz ./ khalid@82.31.32.214:/home/khalid/public_html/WebGL-Cursor-Storm/ --exclude 'node_modules/'",
+    "watch": "webpack --progress --colors --watch"
   }
 }
