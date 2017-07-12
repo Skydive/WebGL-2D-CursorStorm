@@ -71,9 +71,9 @@ class Cursor extends Entity
 		this.KeyboardControls(dt);
 		this.PhoneControls(dt);
 
-		glm.vec2.scaleAndAdd(this.Location, this.Location, this.Velocity, dt)
-
+		glm.vec2.scaleAndAdd(this.Location, this.Location, this.Velocity, dt);
 		glm.vec2.scale(this.Velocity, this.Velocity, 1-0.7*dt);
+
 	}
 
 	Render()
@@ -82,11 +82,11 @@ class Cursor extends Entity
 		if(this.bForwardThrust)
 			this.DrawTexture("Texture_Ship_Thrust");
 
+
 		this.DrawTexture("Texture_Ship_Base");
 		this.DrawTexture("Texture_Ship_Wing_Cannon");
 		this.DrawTexture("Texture_Ship_Wings");
-
-
 	}
 }
+
 export {Cursor};

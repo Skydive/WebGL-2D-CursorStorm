@@ -83,10 +83,6 @@ class Render extends Base
 
 		this.core.Resource.LoadShader("ShaderEntity", EntShaderVSrc, EntShaderFSrc, EntityShader);
 
-
-		gl.enable(gl.BLEND);
-		gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
-
 		var resizeTimeout;
 		window.addEventListener("resize", resizeThrottler.bind(this), false);
 		function resizeThrottler()
@@ -119,11 +115,8 @@ class Render extends Base
 	RenderClear()
 	{
 		let gl = this.gl;
-		gl.clearColor(0.05, 0.05, 0.05, 1.0);
-		gl.colorMask(false, false, false, true);
+		gl.clearColor(0.1, 0.05, 0.05, 1.0);
 		gl.clear(gl.COLOR_BUFFER_BIT);
-
-		gl.colorMask(true, true, true, false);
 	}
 
 	RenderPresent()
