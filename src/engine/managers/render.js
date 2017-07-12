@@ -69,7 +69,7 @@ class Render extends Base
 
 		try
 		{
-			this.gl =  this.canvas.getContext("webgl");
+			this.gl = this.canvas.getContext("webgl");
 		}
 		catch(e)
 		{
@@ -83,8 +83,6 @@ class Render extends Base
 
 		this.core.Resource.LoadShader("ShaderEntity", EntShaderVSrc, EntShaderFSrc, EntityShader);
 
-		gl.enable(gl.DEPTH_TEST);
-		gl.depthFunc(gl.LEQUAL);
 
 		gl.enable(gl.BLEND);
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
@@ -122,7 +120,10 @@ class Render extends Base
 	{
 		let gl = this.gl;
 		gl.clearColor(0.05, 0.05, 0.05, 1.0);
-		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+		gl.colorMask(false, false, false, true);
+		gl.clear(gl.COLOR_BUFFER_BIT);
+
+		gl.colorMask(true, true, true, false);
 	}
 
 	RenderPresent()

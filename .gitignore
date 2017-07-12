@@ -1,3 +1,5 @@
 .gitconfig
 node_modules
 .eslintrc
+dist/index.js
+dist/index.js.map

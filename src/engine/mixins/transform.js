@@ -16,7 +16,7 @@ let Transform = (superclass) => class extends superclass {
 	{
 		let v = glm.vec2.create();
 		let R = glm.mat2.create();
-		glm.mat2.fromRotation(R, this.Rotation+this.OffsetRotation);
+		glm.mat2.fromRotation(R, this.Rotation);
 		glm.vec2.transformMat2(v, [1, 0], R);
 		return v;
 	}
@@ -25,7 +25,7 @@ let Transform = (superclass) => class extends superclass {
 	{
 		let v = glm.vec2.create();
 		let R = glm.mat2.create();
-		glm.mat2.fromRotation(R, this.Rotation+this.OffsetRotation);
+		glm.mat2.fromRotation(R, this.Rotation);
 		glm.vec2.transformMat2(v, [0, 1], R);
 		return v;
 	}

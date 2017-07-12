@@ -29,7 +29,7 @@
   "scripts": {
     "transpile": "webpack --progress --colors",
     "local": "electron electron.js",
-    "sync": "rsync -avz ./ khalid@82.31.32.214:/home/khalid/public_html/WebGL-Cursor-Storm/ --exclude 'node_modules/'",
+    "sync": "rsync -avz ./ khalid@82.31.32.214:/home/khalid/public_html/WebGL-Cursor-Storm/ --exclude 'node_modules/' --delete",
     "watch": "webpack --progress --colors --watch"
   }
 }
