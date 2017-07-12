@@ -16,7 +16,7 @@ class Pipeline extends Base
 	{
 		super();
 		this.CameraLocation = glm.vec2.create();
-		this.CameraRotation = glm.vec2.create();
+		this.CameraRotation = 0;
 	}
 
 	GetProjectionMatrix(w, h) { return null; }
@@ -26,7 +26,11 @@ class Pipeline extends Base
 		let h = this.core.Render.displayHeight;
 		let V = glm.mat3.create();
 
-		glm.mat3.scale(V, V, [-1/w,  1/h]);
+		glm.mat3.scale(V, V, [1/w,  1/h]);
+
+
+		glm.mat3.translate(V, V, [-this.CameraLocation[0], -this.CameraLocation[1]]);
+
 		//glm.mat3.translate(V, V, [w/2 , h/2]);
 		//glm.mat3.transpose(V, V);
 		return V
@@ -85,6 +89,19 @@ class Render extends Base
 		gl.enable(gl.BLEND);
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
 
+		var resizeTimeout;
+		window.addEventListener("resize", resizeThrottler.bind(this), false);
+		function resizeThrottler()
+		{
+			if(!resizeTimeout)
+			{
+				resizeTimeout = setTimeout(function()
+				{
+		    		resizeTimeout = null;
+		    		this.ResizeViewport.bind(this)();
+		  		}.bind(this), 66);
+			}
+		}
 		this.ResizeViewport();
 	}
 

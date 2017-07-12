@@ -1,14 +1,12 @@
 import {Base} from './base'
+import {Transform} from './mixins/transform'
+import * as glm from 'gl-matrix'
 
-class Entity extends Base
+class Entity extends Transform(Base)
 {
 	constructor()
 	{
 		super();
-		this.Location = [0, 0];
-		this.Scale = [1, 1];
-		this.Rotation = 0;
-
 		this.bDestroyed = false;
 	}
 

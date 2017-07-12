@@ -1,11 +1,16 @@
 import {Entity} from './engine/entity'
 
+import * as glm from 'gl-matrix'
+
 class Cursor extends Entity
 {
 	constructor()
 	{
 		super();
 		this.Scale = [5, 5];
+
+		this.OffsetRotation = 90 * (Math.PI/180);
+
 		this.Acceleration = 1200;
 		this.Velocity = [0, 0];
 		this.AngularVelocity = 4;
@@ -22,37 +27,16 @@ class Cursor extends Entity
 		let th = 0;
 		if     (this.core.Input.KeyDown("W"))	{r = 1;}
 		else if(this.core.Input.KeyDown("S"))	{r = -1;}
-		if     (this.core.Input.KeyDown("D"))	{th = 1;}
-		else if(this.core.Input.KeyDown("A"))	{th = -1;}
+		if     (this.core.Input.KeyDown("A"))	{th = 1;}
+		else if(this.core.Input.KeyDown("D"))	{th = -1;}
 		if(r != 0)
 		{
-			this.Velocity[0] += -r*this.Acceleration*Math.sin(this.Rotation)*dt;
-			this.Velocity[1] += r*this.Acceleration*Math.cos(this.Rotation)*dt;
+			let v = glm.vec2.create(); glm.vec2.scale(v, this.GetForwardVector(), r*this.Acceleration*dt);
+			glm.vec2.add(this.Velocity, this.Velocity, v);
 		}
 		if(th != 0)
 		{
-			this.Rotation += th * this.AngularVelocity * dt;
-			this.Rotation %= (2 * Math.PI);
-		}
-	}
-
-	KeyboardControls(dt)
-	{
-		let r = 0;
-		let th = 0;
-		if     (this.core.Input.KeyDown("W"))	{r = 1;}
-		else if(this.core.Input.KeyDown("S"))	{r = -1;}
-		if     (this.core.Input.KeyDown("D"))	{th = 1;}
-		else if(this.core.Input.KeyDown("A"))	{th = -1;}
-		if(r != 0)
-		{
-			this.Velocity[0] += -r*this.Acceleration*Math.sin(this.Rotation)*dt;
-			this.Velocity[1] += r*this.Acceleration*Math.cos(this.Rotation)*dt;
-		}
-		if(th != 0)
-		{
-			this.Rotation += th * this.AngularVelocity * dt;
-			this.Rotation %= (2 * Math.PI);
+			this.Rotation = (this.Rotation+th*this.AngularVelocity*dt)%(2*Math.PI);
 		}
 	}
 
@@ -62,14 +46,14 @@ class Cursor extends Entity
 		if(beta != null)
 		{
 			let r = -(beta-45)/50;
-			this.Velocity[0] += -r*this.Acceleration*Math.sin(this.Rotation)*dt;
-			this.Velocity[1] += r*this.Acceleration*Math.cos(this.Rotation)*dt;
+			let v = glm.vec2.create(); glm.vec2.scale(v, v, r*this.Acceleration*dt);
+			glm.vec3.add(this.Velocity, this.Velocity, v);
 		}
 		let gamma = this.core.Input.phone.gamma;
 		if(gamma != null)
 		{
-			this.Rotation += gamma/50 * this.AngularVelocity * dt;
-			this.Rotation %= (2 * Math.PI);
+			let th = gamma/50;
+			this.Rotation = (this.Rotation+th*this.AngularVelocity*dt)%(2*Math.PI);
 		}
 	}
 

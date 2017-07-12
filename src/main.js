@@ -22,15 +22,6 @@ class GameCore extends Core
 	Tick(dt)
 	{
 		super.Tick(dt);
-		if(this.core.Input.KeyDown("W"))
-			console.log("W");
-		if(this.core.Input.KeyDown("S"))
-			console.log("S");
-		if(this.core.Input.KeyDown("A"))
-			console.log("A");
-		if(this.core.Input.KeyDown("D"))
-			console.log("D");
-
 	}
 }
 
