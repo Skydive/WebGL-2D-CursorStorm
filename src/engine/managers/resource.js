@@ -19,8 +19,7 @@ class Resource extends Base
 	{
 		if(Object.keys(this.ResourceMap).indexOf(name) > -1)
 		{
-			console.error("Resource identifier: "+name+" for "+basepath+" already taken!");
-			throw "Resource identifier: "+name+" for "+basepath+" already taken!";
+			console.error("Resource identifier: "+name+" for "+basepath+" already taken!"); return;
 		}
 
 		let gl = this.core.Render.gl;
@@ -55,10 +54,7 @@ class Resource extends Base
 	LoadTexture(name, basepath)
 	{
 		if(Object.keys(this.ResourceMap).indexOf(name) > -1)
-		{
-			console.error("Resource identifier: "+name+" for "+basepath+" already taken!");
-			throw "Resource identifier: "+name+" for "+basepath+" already taken!";
-		}
+			return;
 
 		let img = new Image();
 		img.src = basepath;
@@ -80,6 +76,19 @@ class Resource extends Base
 			data: null,
 			image: null,
 		};
+	}
+
+	LoadAnimation(name, basepath, count)
+	{
+		this.ResourceMap[name] = {
+			count: count
+		};
+		for(let i=0; i<count; i++)
+		{
+			let path = basepath.replace("%", i);
+			console.log(path);
+			this.LoadTexture(name+"_"+i, path);
+		}
 	}
 }
 export {Resource};

@@ -11,10 +11,12 @@ class Scene extends Base
 
 	Tick(dt)
 	{
-		this.EntityList.forEach( (ent) => {
+		for(let i in this.EntityList)
+		{
+			let ent = this.EntityList[i];
 			ent.Tick(dt);
 			ent.Render();
-		});
+		}
 		this.RefreshEntities();
 	}
 
@@ -30,12 +32,14 @@ class Scene extends Base
 
 	RefreshEntities()
 	{
-		for(let ent in this.EntityList)
+		for(let i=0; i<this.EntityList.length; i++)
 		{
+			let ent = this.EntityList[i];
 			if(ent.bDestroyed)
 			{
-				this.EntityList.pop(ent);
-				ent = null;
+				ent.OnDestroyed();
+				delete this.EntityList[i];
+				this.EntityList.splice(i, 1); i--;
 			}
 		}
 	}

@@ -17,15 +17,11 @@ class Entity extends Transform(Base)
 	{
 		this.bDestroyed = true;
 	}
-
+	OnDestroyed(){}
+	
 	Spawn(obj, owner)
 	{
-		var ent = new obj();
-		ent.core = this.core;
-		ent.owner = (owner === undefined) ? this : owner;
-		ent.BeginPlay();
-		this.EntityList.push(ent);
-		return ent;
+		return this.core.Scene.Spawn(obj, owner);
 	}
 
 	DrawTexture(texname)
@@ -55,7 +51,7 @@ class Entity extends Transform(Base)
 			[x, y],
 			this.Rotation+this.OffsetRotation,
 			[w*this.Scale[0], h*this.Scale[1]]);
-			
+
 		gl.uniformMatrix3fv(shader.uM, false, M);
 
 		var vertices = [

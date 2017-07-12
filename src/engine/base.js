@@ -4,13 +4,14 @@ class Base
 	constructor()
 	{
 		this.core = null;
+		this.owner = null;
 	}
 
 	CreateObject()
 	{
 		var args = Array.prototype.slice.call(arguments);
 		var object = args.shift();
-		var instance = new object(args);
+		var instance = new object(...args);
 		instance.core = this.core;
 		return instance;
 	}
