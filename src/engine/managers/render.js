@@ -17,6 +17,7 @@ class Pipeline extends Base
 		super();
 		this.CameraLocation = glm.vec2.create();
 		this.CameraRotation = 0;
+		this.CameraMag = 3;
 	}
 
 	GetProjectionMatrix(w, h) { return null; }
@@ -27,7 +28,7 @@ class Pipeline extends Base
 		let V = glm.mat3.create();
 
 		glm.mat3.scale(V, V, [1/w,  1/h]);
-
+		glm.mat3.scale(V, V, [this.CameraMag[0], this.CameraMag[1]])
 
 		glm.mat3.translate(V, V, [-this.CameraLocation[0], -this.CameraLocation[1]]);
 
@@ -89,11 +90,10 @@ class Render extends Base
 		{
 			if(!resizeTimeout)
 			{
-				resizeTimeout = setTimeout(function()
-				{
+				resizeTimeout = setTimeout(() => {
 		    		resizeTimeout = null;
 		    		this.ResizeViewport.bind(this)();
-		  		}.bind(this), 66);
+		  		}, 66);
 			}
 		}
 		this.ResizeViewport();

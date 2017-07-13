@@ -2,28 +2,33 @@ import {Base} from './base'
 
 class Animation extends Base
 {
-	constructor(name, duration, loop)
+	constructor()
 	{
 		super();
-		this.Name = name;
-		this.Duration = duration;
-		this.Count = 0;
+		this.Name = null;
+		this.Duration = 0;
 		this.bActive = false;
-		this.bLoop = loop;
+		this.bLoop = false;
 		this.Time = 0;
 		this.bReverse = false;
 		this.CompletedFunc = null;
 	}
 
-	Start(rev)
+	static Create(core, name)
 	{
-		this.bReverse = rev;
-		this.Count = this.GetCount();
+		let a = new Animation();
+		a.Name = name;
+		a.core = core;
+		return a;
+	}
+
+	Start()
+	{
 		this.bActive = true;
 		this.Time = 0;
 	}
 
-	GetCount()
+	get Count()
 	{
 		return this.core.Resource.Get(this.Name).count;
 	}

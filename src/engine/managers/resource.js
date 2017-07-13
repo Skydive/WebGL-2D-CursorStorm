@@ -58,8 +58,7 @@ class Resource extends Base
 
 		let img = new Image();
 		img.src = basepath;
-		img.onload = function()
-		{
+		img.onload = () => {
 			let gl = this.core.Render.gl;
 			var texture = gl.createTexture();
 			gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -71,7 +70,7 @@ class Resource extends Base
 			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
 			this.ResourceMap[name].data = texture;
 			this.ResourceMap[name].image = img;
-		}.bind(this);
+		};
 		this.ResourceMap[name] = {
 			data: null,
 			image: null,

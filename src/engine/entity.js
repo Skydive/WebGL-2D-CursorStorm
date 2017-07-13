@@ -18,7 +18,7 @@ class Entity extends Transform(Base)
 		this.bDestroyed = true;
 	}
 	OnDestroyed(){}
-	
+
 	Spawn(obj, owner)
 	{
 		return this.core.Scene.Spawn(obj, owner);
@@ -35,8 +35,8 @@ class Entity extends Transform(Base)
 			w = tex.image.naturalWidth;
 			h = tex.image.naturalHeight;
 		}
-		let x = this.Location[0] - w/2;
-		let y = this.Location[1] - h/2;
+		let x = this.Location[0];
+		let y = this.Location[1];
 
 		let shader = this.core.Resource.Get("ShaderEntity");
 		shader.Texture = tex;

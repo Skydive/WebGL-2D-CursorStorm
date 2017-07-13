@@ -22,37 +22,46 @@ class Input extends Base
 		this.phone.gamma = null;
 		this.phone.touch = new Object();
 		this.phone.touch.state = false;
+		this.phone.touch.point = null;
 		this.phone.touch.Location = [0, 0];
 	}
 
 	BeginPlay()
 	{
-		document.addEventListener("keyup", function(event)
-		{
+		document.addEventListener("keyup", (event) => {
 			this.OnKeyUp(event.which);
-		}.bind(this));
-		document.addEventListener("keydown", function(event)
-		{
+		});
+		document.addEventListener("keydown", (event) => {
 			this.OnKeyDown(event.which);
-		}.bind(this));
-		document.addEventListener("mousedown", function(event)
-		{
+		});
+		document.addEventListener("mousedown", (event) => {
 			this.OnMouseDown(event.which);
-		}.bind(this));
-		document.addEventListener("mouseup", function(event)
-		{
+		});
+		document.addEventListener("mouseup", (event) => {
 			this.OnMouseUp(event.which);
-		}.bind(this));
-		document.addEventListener("contextmenu", function(event)
-		{
+		});
+		document.addEventListener("contextmenu", (event) => {
     		event.preventDefault();
-		}.bind(this));
-		window.addEventListener("deviceorientation", function(event)
-		{
+		});
+		window.addEventListener("deviceorientation", (event) => {
 			this.phone.alpha = event.alpha;
 			this.phone.beta = event.beta;
 			this.phone.gamma = event.gamma;
-		}.bind(this), true);
+		}, true);
+		window.addEventListener("touchstart", (event) => {
+			this.phone.touch.point = event.touches.item(0);
+		});
+		window.addEventListener("touchend", (event) => {
+			if(event.touches.length == 0)
+				this.phone.touch.point = null;
+		});
+		window.addEventListener("touchcancel", (event) => {
+			if(event.touches.length == 0)
+				this.phone.touch.point = null;
+		});
+		window.addEventListener("touchmove", (event) => {
+			this.phone.touch.point = event.touches.item(0);
+		});
 	}
 
 	Tick(dt)
