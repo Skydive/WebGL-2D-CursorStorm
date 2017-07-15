@@ -1,7 +1,7 @@
 import {Core} from './engine/core';
 
-import {ShipController} from './shipcontroller.js';
-import {ShipPawn} from './shippawn.js';
+import {ShipController} from './game/shipcontroller.js';
+import {ShipPawn} from './game/shippawn.js';
 //import {CameraEntity} from './cameraentity';
 
 console.log("Main.js executed!");
@@ -31,12 +31,19 @@ class GameCore extends Core
 
 		this.C = this.Scene.Spawn(ShipController);
 
+		this.ColorList = [
+			[1.0, 0.2, 0.2, 1.0],
+			[0.2, 1.0, 0.2, 1.0],
+			[0.2, 0.2, 1.0, 1.0],
+			[1.0, 1.0, 0.2, 1.0],
+			[1.0, 0.2, 1.0, 1.0]];
+
 		for(let i=0; i<5; i++)
 		{
 			let p = this.Scene.Spawn(ShipPawn);
-
 			p.Location = [(i-2)*64, 0];
 			p.Rotation = 90 * (Math.PI/180);
+			p.Color = this.ColorList[i % this.ColorList.length];
 			this.PawnList.push(p);
 		}
 

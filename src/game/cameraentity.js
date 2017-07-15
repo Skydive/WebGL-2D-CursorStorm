@@ -1,4 +1,4 @@
-import {Entity} from './engine/entity';
+import {Entity} from '../engine/entity';
 
 class CameraEntity extends Entity
 {

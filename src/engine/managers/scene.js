@@ -15,7 +15,7 @@ class Scene extends Base
 		{
 			let ent = this.EntityList[i];
 			ent.Tick(dt);
-			ent.Render();
+			ent.Draw();
 		}
 		this.RefreshEntities();
 	}

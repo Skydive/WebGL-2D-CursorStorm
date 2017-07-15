@@ -12,6 +12,7 @@ class Base
 		var args = Array.prototype.slice.call(arguments);
 		var object = args.shift();
 		var instance = new object(...args);
+		instance.owner = this;
 		instance.core = this.core;
 		return instance;
 	}

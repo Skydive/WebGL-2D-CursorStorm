@@ -85,7 +85,6 @@ class Resource extends Base
 		for(let i=0; i<count; i++)
 		{
 			let path = basepath.replace("%", i);
-			console.log(path);
 			this.LoadTexture(name+"_"+i, path);
 		}
 	}
