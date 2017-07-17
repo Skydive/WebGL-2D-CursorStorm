@@ -16,10 +16,15 @@ class Entity extends Transform(Base)
 		this.bCollision = false;
 		this.bPhysics = false;
 		this.bRender = false;
+
+		this.shader = null;
 	}
 
 	BeginPlay()
 	{
+		// TODO: Fix this mechanism - it's poorly implemented.
+		// TODO: Fix DrawTexture - unnecessary optimisations
+		this.shader = this.core.Resource.Get("ShaderEntity");
 		if(this.bCollision)
 			this.Collision = this.CreateObject(CollisionComponent);
 		if(this.bPhysics)

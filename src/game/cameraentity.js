@@ -1,22 +1,52 @@
 import {Entity} from '../engine/entity';
 
+import * as glm from 'gl-matrix'
+
 class CameraEntity extends Entity
 {
 	constructor()
 	{
 		super();
+		this.bPhysics = true;
 		this.Speed = 10;
 		this.Target = null;
+
+		this.Force = 750;
+
+		this.MaxSpeed = 300;
+		this.FallOff = 500;
 	}
 
 	BeginPlay()
 	{
 		super.BeginPlay();
+		this.Physics.ResistanceFactor = 0.8;
 	}
 
 	Tick(dt)
 	{
-		this.core.Render.pipeline.CameraLocation = vec3.clone(this.Location);
-		this.core.Render.pipeline.CameraRotation = quat.clone(this.Rotation);
+		if(this.Target != null)
+		{
+			let force = glm.vec2.create();
+			let distance = Math.min(glm.vec2.distance(this.Location, this.Target.Location), this.FallOff);
+			distance /= 1000;
+			glm.vec3.sub(force, this.Target.Location, this.Location);
+			glm.vec3.normalize(force, force);
+			glm.vec3.scale(force, force, this.Force*distance);
+			this.Physics.ApplyForce(force, dt);
+		}
+
+		super.Tick(dt);
+
+		if(glm.vec2.length(this.Physics.Velocity) > this.MaxSpeed)
+		{
+			glm.vec2.normalize(this.Physics.Velocity, this.Physics.Velocity);
+			glm.vec2.scale(this.Physics.Velocity, this.Physics.Velocity, this.MaxSpeed);
+		}
+
+		this.core.Render.pipeline.CameraLocation = glm.vec2.clone(this.Location);
+		this.core.Render.pipeline.CameraRotation = this.Rotation;
+
 	}
 }
+export {CameraEntity};

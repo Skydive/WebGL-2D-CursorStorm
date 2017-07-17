@@ -14,7 +14,23 @@ class Projectile extends Entity
 
 		this.OffsetRotation = -90 * (Math.PI/180);
 
-		this.LifeSpan = 10;
+		this.LifeSpan = 2;
+	}
+
+	BeginPlay()
+	{
+		super.BeginPlay();
+		this.Collision.CollisionClassList = [ShipPawn];
+		this.Collision.RadiusScale = 0.5;
+	}
+
+	OnCollision(collided, dt)
+	{
+		if(collided != this.owner)
+		{
+			collided.Health -= 10;
+			this.Destroy();
+		}
 	}
 
 	Tick(dt)
@@ -27,7 +43,7 @@ class Projectile extends Entity
 
 	Draw()
 	{
-		this.Render.DrawTexture("Texture_Ship_Projectile");
+		this.Render.DrawTexture("Texture_Ship_Projectile", [1.0, 1.0, 1.0, 1.0]);
 	}
 }
 
@@ -43,16 +59,15 @@ class ShipPawn extends Entity
 		this.OffsetRotation = -90 * (Math.PI/180);
 
 		this.Force = 240;
-		this.Velocity = [0, 0];
 		this.AngularVelocity = 4;
 
 		this.bForwardThrust = false;
-
 		this.LastFiredTime = 0;
 		this.FireInterval = 0.15;
 
 		this.Controller = null;
 
+		this.Health = 150;
 		this.Color = [1.0, 0.3, 0.3, 1.0];
 	}
 
@@ -85,6 +100,11 @@ class ShipPawn extends Entity
 	{
 		this.Collision.FromTexture("Texture_Ship_Base");
 		super.Tick(dt);
+
+		if(this.Health <= 0)
+		{
+			this.Destroy();
+		}
 	}
 
 	Draw()
@@ -93,10 +113,10 @@ class ShipPawn extends Entity
 		if(sm > 20)
 		{
 			let n = Math.min(Math.floor(sm / 300 * this.ThrustAnimationOn.Count), this.ThrustAnimationOn.Count-1);
-			this.Render.DrawTexture(this.ThrustAnimationOn.GetFrameNum(n));
+			this.Render.DrawTexture(this.ThrustAnimationOn.GetFrameNum(n), [1.0, 1.0, 1.0, 1.0]);
 		}
 
-		this.Render.DrawTexture("Texture_Ship_Base");
+		this.Render.DrawTexture("Texture_Ship_Base", [1.0, 1.0, 1.0, 1.0]);
 
 		this.Render.DrawTexture(this.CannonAnimationFire.GetFrameNum(this.core.GetTime() - this.LastFiredTime < 0.2*this.FireInterval ? 1 : 0), this.Color);
 		this.Render.DrawTexture(this.WingsAnimationIdle.GetFrameNum(this.bForwardThrust ? 1 : 0), this.Color); this.bForwardThrust = false;
@@ -148,7 +168,6 @@ class ShipPawn extends Entity
 			glm.vec2.scale(r, r, 2*rmag);
 			glm.vec2.sub(this.Physics.Velocity, this.Physics.Velocity, r);
 		}
-		console.log("COLLIDED!");
 	}
 
 	ApplyThrust(scale, dt)
@@ -156,7 +175,7 @@ class ShipPawn extends Entity
 		if(scale > 0)
 			this.bForwardThrust = true;
 
-		let force = glm.vec3.create();
+		let force = glm.vec2.create();
 		glm.vec3.scale(force, this.GetForwardVector(), scale*this.Force);
 		this.Physics.ApplyForce(force, dt);
 	}
@@ -170,17 +189,17 @@ class ShipPawn extends Entity
 	{
 		if(this.core.GetTime() - this.LastFiredTime > this.FireInterval)
 		{
-			let p = this.Spawn(Projectile);
+			let p = this.Spawn(Projectile, this);
 			glm.vec2.scaleAndAdd(p.Location, this.Location, this.GetForwardVector(), 12);
 			glm.vec2.scaleAndAdd(p.Location,    p.Location, this.GetRightVector()  , 12);
 			p.Rotation = this.Rotation;
-			glm.vec2.scaleAndAdd(p.Physics.Velocity, this.Physics.Velocity, this.GetForwardVector(), 260);
+			glm.vec2.scaleAndAdd(p.Physics.Velocity, this.Physics.Velocity, this.GetForwardVector(), 520);
 
-			p = this.Spawn(Projectile);
+			p = this.Spawn(Projectile, this);
 			glm.vec2.scaleAndAdd(p.Location, this.Location, this.GetForwardVector(), 12);
 			glm.vec2.scaleAndAdd(p.Location,    p.Location, this.GetRightVector()  , -12);
 			p.Rotation = this.Rotation;
-			glm.vec2.scaleAndAdd(p.Physics.Velocity, this.Physics.Velocity, this.GetForwardVector(), 260);
+			glm.vec2.scaleAndAdd(p.Physics.Velocity, this.Physics.Velocity, this.GetForwardVector(), 520);
 
 			this.LastFiredTime = this.core.GetTime();
 

@@ -7,12 +7,13 @@ class RenderComponent extends Base
 		super();
 	}
 
+	BeginPlay()
+	{
+		super.BeginPlay();
+	}
+
 	DrawTexture(texname, color)
 	{
-		if(color == undefined)
-		{
-			color = [1.0, 1.0, 1.0, 1.0];
-		}
 
 		let tex = this.core.Resource.Get(texname);
 		let gl = this.core.Render.gl;
@@ -23,10 +24,8 @@ class RenderComponent extends Base
 			w = tex.image.naturalWidth;
 			h = tex.image.naturalHeight;
 		}
-		let x = this.owner.Location[0];
-		let y = this.owner.Location[1];
 
-		let shader = this.core.Resource.Get("ShaderEntity");
+		let shader = this.owner.shader;
 		shader.Texture = tex;
 		shader.Enable();
 
@@ -36,7 +35,7 @@ class RenderComponent extends Base
 		gl.uniformMatrix3fv(shader.uV, false, V);
 
 		let M = pipeline.GetModelMatrix(
-			[x, y],
+			this.owner.Location,
 			this.owner.Rotation+this.owner.OffsetRotation,
 			[w*this.owner.Scale[0], h*this.owner.Scale[1]]);
 		gl.uniformMatrix3fv(shader.uM, false, M);
@@ -44,36 +43,16 @@ class RenderComponent extends Base
 		gl.uniform4fv(shader.uColor, new Float32Array(color));
 
 
-		var vertices = [
-			-1, 1, 0,
-			-1,-1, 0,
-			 1,-1, 0,
-			 1, 1, 0];
-
-		var indices = [
-			0, 1, 2,
-			0, 2, 3];
-
-		var textureCoordinates = [
-			0.0,  0.0,
-			0.0,  1.0,
-			1.0,  1.0,
-			1.0,  0.0];
-
-		var vertex_buffer = gl.createBuffer();
-		gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+		let SquareBuffer = this.core.Render.PrimitiveBuffers.Square;
+		gl.bindBuffer(gl.ARRAY_BUFFER, SquareBuffer.Vertex);
 		gl.vertexAttribPointer(shader.aVertex, 3, gl.FLOAT, false, 0, 0);
 
-		var tex_buffer = gl.createBuffer();
-		gl.bindBuffer(gl.ARRAY_BUFFER, tex_buffer);
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates), gl.STATIC_DRAW);
+
+		gl.bindBuffer(gl.ARRAY_BUFFER, SquareBuffer.UV);
 		gl.vertexAttribPointer(shader.aUV, 2, gl.FLOAT, false, 0, 0);
 
-		var Index_Buffer = gl.createBuffer();
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, Index_Buffer);
-		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
-		gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, SquareBuffer.Index);
+		gl.drawElements(gl.TRIANGLES, SquareBuffer.IndexLength, gl.UNSIGNED_SHORT, 0);
 
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
 		gl.bindBuffer(gl.ARRAY_BUFFER, null);

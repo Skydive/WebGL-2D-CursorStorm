@@ -1,7 +1,7 @@
 import {Base} from '../base'
 
 const KEYCODE_MAX = 223;
-
+const MOUSECODE_MAX = 223;
 
 
 
@@ -10,9 +10,11 @@ class Input extends Base
 	constructor()
 	{
 		super();
-		this.keys = [];
+		this.oldkeys = Array(KEYCODE_MAX).fill(false);
+		this.keys = Array(KEYCODE_MAX).fill(false);
 		this.mouse = new Object();
-		this.mouse.keys = [];
+		this.mouse.oldkeys = Array(MOUSECODE_MAX).fill(false);
+		this.mouse.keys = Array(MOUSECODE_MAX).fill(false);
 		this.mouse.Location = [0, 0];
 		this.mouse.Velocity = [0, 0];
 
@@ -66,88 +68,44 @@ class Input extends Base
 
 	Tick(dt)
 	{
-		this.keys = this.keys.filter(x => x.down);
-		this.mouse.keys = this.mouse.keys.filter(x => x.down);
+		this.oldkeys = this.keys.slice();
+		this.mouse.oldkeys = this.mouse.keys.slice();
 	}
 
 	OnKeyUp(keycode)
 	{
-		if(keycode >= 0 && keycode < KEYCODE_MAX)
-		{
-			for(var i=0; i<this.keys.length; i++)
-			{
-				if(this.keys[i].code == keycode)
-				{
-					this.keys[i].down = false;
-				}
-			}
-		}
+		this.keys[keycode] = false;
 	}
 	OnKeyDown(keycode)
 	{
-		if(keycode >= 0 && keycode < KEYCODE_MAX)
-		{
-			if(this.keys.map(function(x){return x.code;}).indexOf(keycode) == -1)
-			{
-				this.keys.push({code: keycode, down: true});
-			}
-			else
-			{
-				for(var i=0; i<this.keys.length; i++)
-				{
-					if(this.keys[i].code == keycode)
-					{
-						this.keys[i].down = true;
-					}
-				}
-			}
-		 }
+		this.keys[keycode] = true;
 	}
 
-	OnMouseUp(n)
+	OnMouseUp(keycode)
 	{
-		for(var i=0; i<this.mouse.keys.length; i++)
-		{
-			if(this.mouse.keys[i].code == n)
-			{
-				this.mouse.keys[i].down = false;
-			}
-		}
+		this.mouse.keys[keycode] = false;
 	}
-	OnMouseDown(n)
+	OnMouseDown(keycode)
 	{
-		if(this.mouse.keys.map(function(x){return x.code;}).indexOf(n) == -1)
-		{
-			this.mouse.keys.push({code: n, down: true});
-		}
-		else
-		{
-			for(var i=0; i<this.mouse.keys.length; i++)
-			{
-				if(this.mouse.keys[i].code == n)
-				{
-					this.mouse.keys[i].down = true;
-				}
-			}
-		}
+		this.mouse.keys[keycode] = true;
 	}
 
 
 	KeyUp(n)
 	{
-		return this.keys.filter( x => x.code==Input.CtoK(n) && !x.down ).length > 0;
+		let k = Input.CtoK(n);
+		return this.oldkeys[k] && !this.keys[k];
 	}
 	KeyDown(n)
 	{
-		return this.keys.filter( x => x.code==Input.CtoK(n) &&  x.down ).length > 0;
+		return this.keys[Input.CtoK(n)];
 	}
 	MouseUp(n)
 	{
-		return this.mouse.keys.filter( x => x.code==n && !x.down ).length > 0;
 	}
 	MouseDown(n)
 	{
-		return this.mouse.keys.filter( x => x.code==n &&  x.down ).length > 0;
+
 	}
 
 

@@ -7,6 +7,7 @@ class PhysicsComponent extends Base
 	constructor()
 	{
 		super();
+		this.MaxSpeed = -1;
 		this.Velocity = [0, 0];
 		this.Mass = 1;
 		this.ResistanceFactor = 1.0;
@@ -20,7 +21,7 @@ class PhysicsComponent extends Base
 
 	ApplyForce(force, dt)
 	{
-		glm.vec3.scaleAndAdd(this.Velocity, this.Velocity, force, dt/this.Mass);
+		glm.vec2.scaleAndAdd(this.Velocity, this.Velocity, force, dt/this.Mass);
 	}
 
 }

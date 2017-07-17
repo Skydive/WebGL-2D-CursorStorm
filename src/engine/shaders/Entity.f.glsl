@@ -3,12 +3,15 @@ precision highp float;
 varying vec2 fUV;
 
 uniform vec4 Color;
-uniform float Time;
 
+uniform bool bUseTexture;
 uniform sampler2D Texture;
 
 void main(void)
 {
+	if(!bUseTexture == true)
+		discard;
+
 	vec4 tex = texture2D(Texture, fUV);
 	if(tex == vec4(1.0, 1.0, 1.0, 1.0))
 	{

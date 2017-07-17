@@ -9,6 +9,8 @@ class Scene extends Base
 		this.EntityList = [];
 	}
 
+	BeginPlay(){}
+
 	Tick(dt)
 	{
 		for(let i in this.EntityList)

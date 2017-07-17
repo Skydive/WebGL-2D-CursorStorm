@@ -63,7 +63,8 @@ class EntityShader extends Shader
 
 		this.uColor = gl.getUniformLocation(this.Program, "Color");
 		this.uTexture = gl.getUniformLocation(this.Program, "Texture");
-		this.uTime = gl.getUniformLocation(this.Program, "Time");
+		this.ubUseTexture = gl.getUniformLocation(this.Program, "bUseTexture");
+		//this.uTime = gl.getUniformLocation(this.Program, "Time");
 
 		this.aVertex = gl.getAttribLocation(this.Program, "Vertex");
 		gl.enableVertexAttribArray(this.aVertex);
@@ -76,7 +77,7 @@ class EntityShader extends Shader
 	{
 		super.Enable();
 		let gl = this.core.Render.gl;
-		gl.uniform1f(this.uTime, this.core.GetElapsedTime());
+		//gl.uniform1f(this.uTime, this.core.GetElapsedTime());
 		gl.uniform4fv(this.uColor, new Float32Array([1.0, 1.0, 1.0, 1.0]));
 
 		if(this.Texture.data !== null)
@@ -84,6 +85,11 @@ class EntityShader extends Shader
 			gl.activeTexture(gl.TEXTURE0);
 			gl.bindTexture(gl.TEXTURE_2D, this.Texture.data);
 			gl.uniform1i(this.uTexture, 0);
+			gl.uniform1i(this.ubUseTexture, 1);
+		}
+		else
+		{
+			gl.uniform1i(this.ubUseTexture, 0);
 		}
 	}
 

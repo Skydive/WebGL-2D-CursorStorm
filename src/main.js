@@ -1,8 +1,8 @@
 import {Core} from './engine/core';
 
-import {ShipController} from './game/shipcontroller.js';
-import {ShipPawn} from './game/shippawn.js';
-//import {CameraEntity} from './cameraentity';
+import {ShipController} from './game/shipcontroller';
+import {ShipPawn} from './game/shippawn';
+import {BackgroundEntity} from './game/background';
 
 console.log("Main.js executed!");
 
@@ -13,6 +13,7 @@ class GameCore extends Core
 	{
 		super();
 		this.C = null;
+		this.Camera = null;
 		this.PawnList = [];
 
 		this.SwitchIndex = 0;
@@ -25,9 +26,10 @@ class GameCore extends Core
 		super.BeginPlay();
 		console.log("Game Core executed!");
 
+		BackgroundEntity.Precache(this);
 		ShipPawn.Precache(this);
 
-		this.core.Render.pipeline.CameraMag = [3, 3];
+		this.core.Render.pipeline.CameraMag = [4, 4];
 
 		this.C = this.Scene.Spawn(ShipController);
 
@@ -48,6 +50,10 @@ class GameCore extends Core
 		}
 
 		this.C.Possess(this.PawnList[this.SwitchIndex]);
+
+
+		this.Background = this.Scene.Spawn(BackgroundEntity);
+		this.Background.Target = this.C.Camera;
 	}
 
 	Tick(dt)

@@ -23,7 +23,7 @@ class Core extends Base
 
 		console.info("Create Manager: Scene");
 		this.Scene = this.CreateObject(Scene);
-
+		this.Scene.BeginPlay();
 
 		console.info("Create Manager: Resource");
 		this.Resource = this.CreateObject(Resource);
@@ -49,6 +49,7 @@ class Core extends Base
 		let dt = this.dt;
 
 		this.Render.RenderClear();
+		this.Render.RenderBackground();
 
 		this.Input.Tick(dt);
 		this.Tick(dt);

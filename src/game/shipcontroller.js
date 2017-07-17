@@ -1,4 +1,7 @@
 import {Entity} from '../engine/entity'
+import {CameraEntity} from './cameraentity';
+
+import $ from 'jquery'
 
 class ShipController extends Entity
 {
@@ -6,6 +9,30 @@ class ShipController extends Entity
 	{
 		super();
 		this.Pawn = null;
+
+		$("body").append("<div id='ship_hud'></div>");
+		$("#ship_hud").css({
+		    "position": "absolute",
+		    "width": "auto",
+			"height": "auto",
+			"color": "#FFFFFF",
+		    "border": "2px solid #ccc",
+			"padding": "5px",
+			"text-align": "center",
+			"bottom": "10%",
+			"left": "10%",
+			"transform": "translateX(-50%)",
+		});
+		$("#ship_hud").append("<p id='ship_hud_fps'></p>");
+		$("#ship_hud").append("<br/><p id='ship_hud_health'></p>");
+		$("#ship_hud").append("<br/><p id='ship_hud_location'></p>");
+		$("#ship_hud").append("<br/><p id='ship_hud_cameralocation'></p>");
+	}
+
+	BeginPlay()
+	{
+		super.BeginPlay();
+		this.Camera = this.Spawn(CameraEntity);
 	}
 
 	Possess(pawn)
@@ -15,6 +42,29 @@ class ShipController extends Entity
 
 		this.Pawn = pawn;
 		pawn.Controller = this;
+	}
+
+	Tick(dt)
+	{
+		if(this.Pawn == null)
+			return;
+
+		this.Camera.Target = this.Pawn;
+
+		this.KeyboardControls(dt);
+		this.PhoneControls(dt);
+
+		$("#ship_hud_fps").html(`FPS: ${(1/dt).toFixed(0)}`);
+		$("#ship_hud_cameralocation").html(`Camera Location: [${this.Camera.Location[0].toFixed(0)}, ${this.Camera.Location[1].toFixed(0)}]`);
+		if(this.Pawn != null)
+		{
+			$("#ship_hud_health").html(`HP ${this.Pawn.Health}`);
+			$("#ship_hud_location").html(`Location: [${this.Pawn.Location[0].toFixed(0)}, ${this.Pawn.Location[1].toFixed(0)}]`);
+		}
+		else
+		{
+			$("#ship_hud_location").html("");
+		}
 	}
 
 	KeyboardControls(dt)
@@ -57,13 +107,5 @@ class ShipController extends Entity
 		}
 	}
 
-	Tick(dt)
-	{
-		if(this.Pawn == null)
-			return;
-
-		this.KeyboardControls(dt);
-		this.PhoneControls(dt);
-	}
 }
 export {ShipController}
