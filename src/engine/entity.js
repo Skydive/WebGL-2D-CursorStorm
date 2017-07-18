@@ -19,6 +19,7 @@ class Entity extends Transform(Base)
 		this.LifeSpan = 0;
 	}
 
+
 	BeginPlay()
 	{
 		if(this.bCollision)
@@ -26,6 +27,8 @@ class Entity extends Transform(Base)
 		if(this.bPhysics)
 			this.Physics = this.CreateObject(PhysicsComponent);
 	}
+
+	PostBeginPlay(){}
 
 	// Collision
 	OnCollisionStart(collided, dt){}
@@ -60,7 +63,6 @@ class Entity extends Transform(Base)
 	Destroy()
 	{
 		this.bDestroyed = true;
-		this.OnDestroyed();
 	}
 	OnDestroyed(){}
 

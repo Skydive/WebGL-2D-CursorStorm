@@ -1,7 +1,9 @@
 import {Core} from './engine/core';
 
 import {ShipController} from './game/shipcontroller';
+import {ShipBotController} from './game/shipbotcontroller';
 import {ShipPawn} from './game/shippawn';
+import {ShipProjectile} from './game/shipprojectile'
 import {BackgroundEntity} from './game/background';
 
 console.log("Main.js executed!");
@@ -27,9 +29,10 @@ class GameCore extends Core
 		console.log("Game Core executed!");
 
 		BackgroundEntity.Precache(this);
+		ShipProjectile.Precache(this);
 		ShipPawn.Precache(this);
 
-		this.core.Render.pipeline.CameraMag = [4, 4];
+		this.core.Render.pipeline.CameraMag = [3, 3];
 
 		this.C = this.Scene.Spawn(ShipController);
 
@@ -55,6 +58,13 @@ class GameCore extends Core
 
 		this.Background = this.Scene.Spawn(BackgroundEntity);
 		this.Background.Target = this.C.Camera;
+
+
+		let e = this.Scene.Spawn(ShipPawn);
+		e.Location = [0, 300];
+		e.default.Color = [0.2, 1.0, 1.0];
+		e.Color = e.default.Color;
+		this.Scene.Spawn(ShipBotController).Possess(e);
 	}
 
 	Tick(dt)

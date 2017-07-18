@@ -8,12 +8,21 @@ class Scene extends Base
 	{
 		super();
 		this.EntityList = [];
+		this.PendingEntityList = [];
 	}
 
 	BeginPlay(){}
 
 	Tick(dt)
 	{
+		for(let i in this.PendingEntityList)
+		{
+			let ent = this.PendingEntityList[i];
+			this.EntityList.push(ent);
+			ent.PostBeginPlay();
+		}
+		this.PendingEntityList = [];
+
 		for(let i in this.EntityList)
 		{
 			let ent = this.EntityList[i];
@@ -39,7 +48,7 @@ class Scene extends Base
 		ent.core = this.core;
 		ent.owner = (owner === undefined) ? this : owner;
 		ent.BeginPlay();
-		this.EntityList.push(ent);
+		this.PendingEntityList.push(ent);
 		return ent;
 	}
 

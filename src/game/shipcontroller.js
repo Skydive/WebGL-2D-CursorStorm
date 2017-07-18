@@ -36,7 +36,8 @@ class ShipController extends Controller
 
 	Tick(dt)
 	{
-		if(this.Pawn == null)
+
+		if(this.Pawn == null || this.Camera == null)
 			return;
 
 		this.Camera.Target = this.Pawn;

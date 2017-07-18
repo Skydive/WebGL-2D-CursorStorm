@@ -85,8 +85,6 @@ class CollisionComponent extends Base
 			}
 		}
 	}
-
-
 }
 
 export {CollisionComponent};

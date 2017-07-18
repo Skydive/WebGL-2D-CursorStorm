@@ -47,7 +47,7 @@ class Animation extends Base
 			{
 				this.bActive = false;
 				if(this.CompletedFunc != null)
-					this.CompletedFunc(this);
+					this.CompletedFunc();
 			}
 		}
 	}
