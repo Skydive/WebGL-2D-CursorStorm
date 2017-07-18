@@ -173,5 +173,53 @@ class Render extends Base
 	{
 		this.RenderBackgroundFunc = func;
 	}
+
+	DrawTexture(transform, texname, color)
+	{
+		color = (color == undefined) ? [1.0, 1.0, 1.0, 1.0] : [color[0], color[1], color[2], 1.0];
+
+		let tex = this.core.Resource.Get(texname);
+		let gl = this.core.Render.gl;
+		let w = 5;
+		let h = 5;
+		if(tex.image !== null)
+		{
+			w = tex.image.naturalWidth;
+			h = tex.image.naturalHeight;
+		}
+
+		let shader = this.core.Resource.Get("ShaderEntity");
+		shader.Texture = tex;
+		shader.Enable();
+
+		let pipeline = this.core.Render.pipeline;
+
+		let V = pipeline.GetViewMatrix();
+		gl.uniformMatrix3fv(shader.uV, false, V);
+
+		let M = pipeline.GetModelMatrix(
+			transform.Location,
+			transform.Rotation+transform.OffsetRotation,
+			[w*transform.Scale[0], h*transform.Scale[1]]);
+		gl.uniformMatrix3fv(shader.uM, false, M);
+
+		gl.uniform4fv(shader.uColor, new Float32Array(color));
+
+
+		let SquareBuffer = this.core.Render.PrimitiveBuffers.Square;
+		gl.bindBuffer(gl.ARRAY_BUFFER, SquareBuffer.Vertex);
+		gl.vertexAttribPointer(shader.aVertex, 3, gl.FLOAT, false, 0, 0);
+
+
+		gl.bindBuffer(gl.ARRAY_BUFFER, SquareBuffer.UV);
+		gl.vertexAttribPointer(shader.aUV, 2, gl.FLOAT, false, 0, 0);
+
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, SquareBuffer.Index);
+		gl.drawElements(gl.TRIANGLES, SquareBuffer.IndexLength, gl.UNSIGNED_SHORT, 0);
+
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+		gl.bindBuffer(gl.ARRAY_BUFFER, null);
+		shader.Disable();
+	}
 }
 export {BASIS_VECTOR, Render};

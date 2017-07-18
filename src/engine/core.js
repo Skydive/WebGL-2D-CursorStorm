@@ -48,13 +48,13 @@ class Core extends Base
 		this.LastUpdate = this.GetTime();
 		let dt = this.dt;
 
-		this.Render.RenderClear();
-		this.Render.RenderBackground();
-
 		this.Input.Tick(dt);
 		this.Tick(dt);
 		this.Scene.Tick(dt);
 
+		this.Render.RenderClear();
+		this.Render.RenderBackground();
+		this.Scene.Render();
 		this.Render.RenderPresent();
 
 		window.requestAnimationFrame(this.MainLoop.bind(this));

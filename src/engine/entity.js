@@ -2,7 +2,7 @@ import {Base} from './base'
 import {Transform} from './mixins/transform'
 import {CollisionComponent} from './components/collisioncomponent'
 import {PhysicsComponent} from './components/physicscomponent'
-import {RenderComponent} from './components/rendercomponent'
+
 import * as glm from 'gl-matrix'
 
 
@@ -12,25 +12,19 @@ class Entity extends Transform(Base)
 	{
 		super();
 		this.bDestroyed = false;
-
 		this.bCollision = false;
 		this.bPhysics = false;
-		this.bRender = false;
 
-		this.shader = null;
+		this.bLifeSpan = false;
+		this.LifeSpan = 0;
 	}
 
 	BeginPlay()
 	{
-		// TODO: Fix this mechanism - it's poorly implemented.
-		// TODO: Fix DrawTexture - unnecessary optimisations
-		this.shader = this.core.Resource.Get("ShaderEntity");
 		if(this.bCollision)
 			this.Collision = this.CreateObject(CollisionComponent);
 		if(this.bPhysics)
 			this.Physics = this.CreateObject(PhysicsComponent);
-		if(this.bRender)
-			this.Render = this.CreateObject(RenderComponent);
 	}
 
 	// Collision
@@ -39,19 +33,34 @@ class Entity extends Transform(Base)
 	OnCollisionEnd(collided, dt){}
 
 	// Render
-	Draw(){}
-
-
-	Tick(dt)
+	Render(){}
+	DrawTexture(texname, color)
 	{
-		if(this.bPhysics)
-			this.Physics.Tick(dt);
+		this.core.Render.DrawTexture(this, texname, color);
+	}
+
+	// Ticks
+	PreTick(dt){}
+	Tick(dt){}
+	PostTick(dt)
+	{
 		if(this.bCollision)
 			this.Collision.Tick(dt);
+		if(this.bPhysics)
+			this.Physics.Tick(dt);
+
+		if(this.bLifeSpan)
+		{
+			this.LifeSpan -= dt;
+			if(this.LifeSpan < 0)
+				this.Destroy();
+		}
 	}
+
 	Destroy()
 	{
 		this.bDestroyed = true;
+		this.OnDestroyed();
 	}
 	OnDestroyed(){}
 

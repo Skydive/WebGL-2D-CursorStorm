@@ -1,14 +1,13 @@
-import {Entity} from '../engine/entity'
+import {Controller} from '../framework/controller'
 import {CameraEntity} from './cameraentity';
 
 import $ from 'jquery'
 
-class ShipController extends Entity
+class ShipController extends Controller
 {
 	constructor()
 	{
 		super();
-		this.Pawn = null;
 
 		$("body").append("<div id='ship_hud'></div>");
 		$("#ship_hud").css({
@@ -33,15 +32,6 @@ class ShipController extends Entity
 	{
 		super.BeginPlay();
 		this.Camera = this.Spawn(CameraEntity);
-	}
-
-	Possess(pawn)
-	{
-		if(this.Pawn != null)
-			this.Pawn.Controller = null;
-
-		this.Pawn = pawn;
-		pawn.Controller = this;
 	}
 
 	Tick(dt)

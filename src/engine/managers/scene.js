@@ -1,6 +1,7 @@
 import {Base} from '../base'
 import {Entity} from '../entity'
 
+
 class Scene extends Base
 {
 	constructor()
@@ -16,10 +17,20 @@ class Scene extends Base
 		for(let i in this.EntityList)
 		{
 			let ent = this.EntityList[i];
+			ent.PreTick(dt);
 			ent.Tick(dt);
-			ent.Draw();
+			ent.PostTick(dt);
 		}
 		this.RefreshEntities();
+	}
+
+	Render()
+	{
+		for(let i in this.EntityList)
+		{
+			let ent = this.EntityList[i];
+			ent.Render();
+		}
 	}
 
 	Spawn(obj, owner)

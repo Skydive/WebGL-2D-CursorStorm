@@ -34,18 +34,19 @@ class GameCore extends Core
 		this.C = this.Scene.Spawn(ShipController);
 
 		this.ColorList = [
-			[1.0, 0.2, 0.2, 1.0],
-			[0.2, 1.0, 0.2, 1.0],
-			[0.2, 0.2, 1.0, 1.0],
-			[1.0, 1.0, 0.2, 1.0],
-			[1.0, 0.2, 1.0, 1.0]];
+			[1.0, 0.2, 0.2],
+			[0.2, 1.0, 0.2],
+			[0.2, 0.2, 1.0],
+			[1.0, 1.0, 0.2],
+			[1.0, 0.2, 1.0]];
 
 		for(let i=0; i<5; i++)
 		{
 			let p = this.Scene.Spawn(ShipPawn);
 			p.Location = [(i-2)*64, 0];
 			p.Rotation = 90 * (Math.PI/180);
-			p.Color = this.ColorList[i % this.ColorList.length];
+			p.default.Color = this.ColorList[i % this.ColorList.length];
+			p.Color = p.default.Color;
 			this.PawnList.push(p);
 		}
 

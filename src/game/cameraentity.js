@@ -13,8 +13,10 @@ class CameraEntity extends Entity
 
 		this.Force = 750;
 
-		this.MaxSpeed = 300;
+		this.MaxSpeed = 1200;
 		this.FallOff = 500;
+
+		this.Timeout = 1;
 	}
 
 	BeginPlay()
@@ -34,6 +36,13 @@ class CameraEntity extends Entity
 			glm.vec3.normalize(force, force);
 			glm.vec3.scale(force, force, this.Force*distance);
 			this.Physics.ApplyForce(force, dt);
+
+			let AB = glm.vec2.create();
+			glm.vec2.sub(AB, this.Target.Location, this.Location);
+			if(glm.vec2.length(AB)/this.MaxSpeed >= this.Timeout)
+			{
+				this.Location = glm.vec2.copy(this.Target.Location);
+			}
 		}
 
 		super.Tick(dt);
@@ -46,7 +55,6 @@ class CameraEntity extends Entity
 
 		this.core.Render.pipeline.CameraLocation = glm.vec2.clone(this.Location);
 		this.core.Render.pipeline.CameraRotation = this.Rotation;
-
 	}
 }
 export {CameraEntity};

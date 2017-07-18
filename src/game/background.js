@@ -7,7 +7,6 @@ class BackgroundEntity extends Entity
 	constructor()
 	{
 		super();
-		this.bRender = true;
 		this.Target = null;
 		this.Scale = [0.25, 0.25];
 		this.ParralaxFactor = 0.95;
@@ -22,7 +21,7 @@ class BackgroundEntity extends Entity
 	{
 		super.BeginPlay();
 		this.core.Render.SetRenderBackground(() => {
-			this.Render.DrawTexture("Background_Space", [1.0, 1.0, 1.0, 1.0]);
+			this.DrawTexture("Background_Space");
 		});
 	}
 
