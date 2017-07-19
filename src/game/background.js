@@ -1,4 +1,4 @@
-import {Entity} from '../engine/entity';
+import {Entity, NULL_PTR} from '../engine/entity'
 
 import * as glm from 'gl-matrix'
 
@@ -7,7 +7,7 @@ class BackgroundEntity extends Entity
 	constructor()
 	{
 		super();
-		this.Target = null;
+		this.TargetPtr = NULL_PTR;
 		this.Scale = [0.25, 0.25];
 		this.ParralaxFactor = 0.95;
 	}
@@ -28,9 +28,10 @@ class BackgroundEntity extends Entity
 
 	Tick(dt)
 	{
-		if(this.Target != null)
+		let Target = this.TargetPtr.Deref;
+		if(Target != null)
 		{
-			let loc = glm.vec2.clone(this.Target.Location);
+			let loc = glm.vec2.clone(Target.Location);
 			glm.vec2.scale(loc, loc, this.ParralaxFactor);
 			this.Location = loc;
 		}

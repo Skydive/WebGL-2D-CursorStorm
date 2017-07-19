@@ -1,3 +1,4 @@
+import {NULL_PTR} from '../engine/entity'
 import {Controller} from '../framework/controller'
 import {CameraEntity} from './cameraentity';
 
@@ -12,7 +13,7 @@ class ShipBotController extends Controller
 	constructor()
 	{
 		super();
-		this.TargetPawn = null;
+		this.TargetPawnPtr = NULL_PTR;
 
 		this.Zeal = 0.75;
 		this.TargetRadius = 300;
@@ -22,14 +23,16 @@ class ShipBotController extends Controller
 
 	Tick(dt)
 	{
-		if(this.Pawn == null || this.Pawn.bDestroyed)
+		let Pawn = this.PawnPtr.Deref;
+		let TargetPawn = this.TargetPawnPtr.Deref;
+		if(Pawn == null)
 		{
 			this.Destroy();
 		}
 
 		// Stupid JS Garbage Collection
-		if(this.TargetPawn != null && this.TargetPawn.bDestroyed)
-			this.TargetPawn = null;
+		if(TargetPawn != null)
+			TargetPawn = null;
 
 		this.EstablishTargetPawn();
 		this.AttackSequence(dt);
@@ -37,19 +40,21 @@ class ShipBotController extends Controller
 
 	AttackSequence(dt)
 	{
-		if(this.TargetPawn != null)
+		let TargetPawn = this.TargetPawnPtr.Deref;
+		let Pawn = this.PawnPtr.Deref;
+		if(TargetPawn != null)
 		{
 			let AB = glm.vec2.create();
-			glm.vec2.sub(AB, this.TargetPawn.Location, this.Pawn.Location);
+			glm.vec2.sub(AB, TargetPawn.Location, this.Pawn.Location);
 			let theta = Math.sign(AB[1])*Math.acos(AB[0]/glm.vec2.length(AB));
-			this.Pawn.Rotation = theta;
+			Pawn.Rotation = theta;
 
-			this.Pawn.ApplyThrust(this.Zeal, dt);
+			Pawn.ApplyThrust(this.Zeal, dt);
 
-			glm.vec2.sub(AB, this.TargetPawn.Location, this.Pawn.Location);
+			glm.vec2.sub(AB, TargetPawn.Location, Pawn.Location);
 			if(glm.vec2.length(AB) <= this.AttackRadius)
 			{
-				this.Pawn.FireCannon(dt);
+				Pawn.FireCannon(dt);
 			}
 		}
 	}

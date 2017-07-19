@@ -5,12 +5,35 @@ import {PhysicsComponent} from './components/physicscomponent'
 
 import * as glm from 'gl-matrix'
 
+class EntityWeakPtr extends Base
+{
+	constructor(id)
+	{
+		super()
+		this.ID = id;
+		this.core = null;
+	}
+	get Deref()
+	{
+		if(this.core == null)
+			return null;
+		for(let i in this.core.Scene.EntityList)
+		{
+			if(this.core.Scene.EntityList[i].ID == this.ID)
+				return this.core.Scene.EntityList[i];
+		}
+		return null;
+	}
+}
+const NULL_PTR = new EntityWeakPtr(-1);
 
 class Entity extends Transform(Base)
 {
 	constructor()
 	{
 		super();
+		this.ID = Entity.MaxID++;
+
 		this.bDestroyed = false;
 		this.bCollision = false;
 		this.bPhysics = false;
@@ -19,6 +42,10 @@ class Entity extends Transform(Base)
 		this.LifeSpan = 0;
 	}
 
+	get Ref()
+	{
+		return this.CreateObject(EntityWeakPtr, this.ID);
+	}
 
 	BeginPlay()
 	{
@@ -71,4 +98,5 @@ class Entity extends Transform(Base)
 		return this.core.Scene.Spawn(obj, owner);
 	}
 }
-export {Entity};
+Entity.MaxID = 0;
+export {Entity, NULL_PTR};

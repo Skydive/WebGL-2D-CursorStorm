@@ -1,7 +1,6 @@
 import {Base} from '../base'
 import {Entity} from '../entity'
 
-
 class Scene extends Base
 {
 	constructor()
@@ -18,7 +17,6 @@ class Scene extends Base
 		for(let i in this.PendingEntityList)
 		{
 			let ent = this.PendingEntityList[i];
-			this.EntityList.push(ent);
 			ent.PostBeginPlay();
 		}
 		this.PendingEntityList = [];
@@ -49,6 +47,7 @@ class Scene extends Base
 		ent.owner = (owner === undefined) ? this : owner;
 		ent.BeginPlay();
 		this.PendingEntityList.push(ent);
+		this.EntityList.push(ent);
 		return ent;
 	}
 

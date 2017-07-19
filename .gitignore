@@ -1,5 +1,6 @@
 .gitconfig
 node_modules
 .eslintrc
+package-lock.json
 dist/index.js
 dist/index.js.map

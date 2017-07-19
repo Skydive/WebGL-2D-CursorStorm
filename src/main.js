@@ -14,9 +14,10 @@ class GameCore extends Core
 	constructor()
 	{
 		super();
-		this.C = null;
-		this.Camera = null;
-		this.PawnList = [];
+		this.PlayerControllerPtr = null;
+		this.PawnPtrList = [];
+
+		this.BackgroundPtr = null;
 
 		this.SwitchIndex = 0;
 		this.LastSwitchTime = 0;
@@ -34,7 +35,8 @@ class GameCore extends Core
 
 		this.core.Render.pipeline.CameraMag = [3, 3];
 
-		this.C = this.Scene.Spawn(ShipController);
+		let C = this.Scene.Spawn(ShipController);
+		this.PlayerControllerPtr = C.Ref;
 
 		this.ColorList = [
 			[1.0, 0.2, 0.2],
@@ -50,34 +52,37 @@ class GameCore extends Core
 			p.Rotation = 90 * (Math.PI/180);
 			p.default.Color = this.ColorList[i % this.ColorList.length];
 			p.Color = p.default.Color;
-			this.PawnList.push(p);
+			this.PawnPtrList.push(p.Ref);
 		}
 
-		this.C.Possess(this.PawnList[this.SwitchIndex]);
+		C.Possess(this.PawnPtrList[this.SwitchIndex]);
 
 
-		this.Background = this.Scene.Spawn(BackgroundEntity);
-		this.Background.Target = this.C.Camera;
+		this.BackgroundPtr = this.Scene.Spawn(BackgroundEntity).Ref;
+		this.BackgroundPtr.Deref.TargetPtr = this.PlayerControllerPtr;
 
 
-		let e = this.Scene.Spawn(ShipPawn);
+		/*let e = this.Scene.GetEntityFromID(this.Scene.Spawn(ShipPawn));
 		e.Location = [0, 300];
 		e.default.Color = [0.2, 1.0, 1.0];
 		e.Color = e.default.Color;
-		this.Scene.Spawn(ShipBotController).Possess(e);
+		this.Scene.Spawn(ShipBotController).Possess(e);*/
 	}
 
 	Tick(dt)
 	{
+		let C = this.PlayerControllerPtr.Deref;
+
+		this.PawnPtrList = this.PawnPtrList.filter(ptr => ptr.Deref != null);
 		super.Tick(dt);
 		if(this.Input.KeyDown("LEFT"))
 		{
 			if(this.GetTime() - this.LastSwitchTime > this.SwitchInterval)
 			{
-				this.SwitchIndex = (this.SwitchIndex - 1) % this.PawnList.length;
+				this.SwitchIndex = (this.SwitchIndex - 1) % this.PawnPtrList.length;
 				if(this.SwitchIndex < 0)
-					this.SwitchIndex = this.PawnList.length + this.SwitchIndex;
-				this.C.Possess(this.PawnList[this.SwitchIndex]);
+					this.SwitchIndex = this.PawnPtrList.length + this.SwitchIndex;
+				C.Possess(this.PawnPtrList[this.SwitchIndex]);
 				this.LastSwitchTime = this.GetTime();
 			}
 		}
@@ -85,10 +90,10 @@ class GameCore extends Core
 		{
 			if(this.GetTime() - this.LastSwitchTime > this.SwitchInterval)
 			{
-				this.SwitchIndex = (this.SwitchIndex + 1) % this.PawnList.length;
+				this.SwitchIndex = (this.SwitchIndex + 1) % this.PawnPtrList.length;
 				if(this.SwitchIndex < 0)
-					this.SwitchIndex = this.PawnList.length + this.SwitchIndex;
-				this.C.Possess(this.PawnList[this.SwitchIndex]);
+					this.SwitchIndex = this.PawnPtrList.length + this.SwitchIndex;
+				C.Possess(this.PawnPtrList[this.SwitchIndex]);
 				this.LastSwitchTime = this.GetTime();
 			}
 		}

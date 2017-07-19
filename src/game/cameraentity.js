@@ -1,4 +1,4 @@
-import {Entity} from '../engine/entity';
+import {Entity, NULL_PTR} from '../engine/entity'
 
 import * as glm from 'gl-matrix'
 
@@ -9,7 +9,7 @@ class CameraEntity extends Entity
 		super();
 		this.bPhysics = true;
 		this.Speed = 10;
-		this.Target = null;
+		this.TargetPtr = NULL_PTR;
 
 		this.Force = 750;
 
@@ -27,21 +27,22 @@ class CameraEntity extends Entity
 
 	Tick(dt)
 	{
-		if(this.Target != null)
+		let Target = this.TargetPtr.Deref;
+		if(Target != null)
 		{
 			let force = glm.vec2.create();
-			let distance = Math.min(glm.vec2.distance(this.Location, this.Target.Location), this.FallOff);
+			let distance = Math.min(glm.vec2.distance(this.Location, Target.Location), this.FallOff);
 			distance /= 1000;
-			glm.vec3.sub(force, this.Target.Location, this.Location);
+			glm.vec3.sub(force, Target.Location, this.Location);
 			glm.vec3.normalize(force, force);
 			glm.vec3.scale(force, force, this.Force*distance);
 			this.Physics.ApplyForce(force, dt);
 
 			let AB = glm.vec2.create();
-			glm.vec2.sub(AB, this.Target.Location, this.Location);
+			glm.vec2.sub(AB, Target.Location, this.Location);
 			if(glm.vec2.length(AB)/this.MaxSpeed >= this.Timeout)
 			{
-				this.Location = glm.vec2.copy(this.Target.Location);
+				this.Location = glm.vec2.copy(Target.Location);
 			}
 		}
 

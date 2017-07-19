@@ -1,10 +1,12 @@
-import {Entity} from '../engine/entity'
+import {Entity, NULL_PTR} from '../engine/entity'
 
 class Pawn extends Entity
 {
 	constructor()
 	{
 		super();
+		this.ControllerPtr = NULL_PTR;
+
 		this.MaxHealth = 100;
 		this.Health = this.MaxHealth;
 	}

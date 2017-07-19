@@ -1,20 +1,22 @@
-import {Entity} from '../engine/entity'
+import {Entity, NULL_PTR} from '../engine/entity'
 
 class Controller extends Entity
 {
 	constructor()
 	{
 		super();
-		this.Pawn = null;
+		this.PawnPtr = NULL_PTR;
 	}
 
-	Possess(pawn)
+	Possess(newpawnptr)
 	{
-		if(this.Pawn != null)
-			this.Pawn.Controller = null;
+		let Pawn = this.PawnPtr.Deref;
+		if(Pawn != null)
+			Pawn.Controller = null;
 
-		this.Pawn = pawn;
-		pawn.Controller = this;
+		Pawn = newpawnptr.Deref;
+		this.PawnPtr = Pawn.Ref;
+		Pawn.ControllerPtr = this.Ref;
 	}
 }
 export {Controller}
