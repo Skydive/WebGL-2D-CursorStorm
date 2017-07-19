@@ -57,16 +57,14 @@ class GameCore extends Core
 
 		C.Possess(this.PawnPtrList[this.SwitchIndex]);
 
-
 		this.BackgroundPtr = this.Scene.Spawn(BackgroundEntity).Ref;
-		this.BackgroundPtr.Deref.TargetPtr = this.PlayerControllerPtr;
+		this.BackgroundPtr.Deref.TargetPtr = C.CameraPtr;
 
-
-		/*let e = this.Scene.GetEntityFromID(this.Scene.Spawn(ShipPawn));
+		let e = this.Scene.Spawn(ShipPawn);
 		e.Location = [0, 300];
 		e.default.Color = [0.2, 1.0, 1.0];
 		e.Color = e.default.Color;
-		this.Scene.Spawn(ShipBotController).Possess(e);*/
+		this.Scene.Spawn(ShipBotController).Possess(e.Ref);
 	}
 
 	Tick(dt)

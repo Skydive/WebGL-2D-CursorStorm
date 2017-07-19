@@ -28,11 +28,8 @@ class ShipBotController extends Controller
 		if(Pawn == null)
 		{
 			this.Destroy();
+			return;
 		}
-
-		// Stupid JS Garbage Collection
-		if(TargetPawn != null)
-			TargetPawn = null;
 
 		this.EstablishTargetPawn();
 		this.AttackSequence(dt);
@@ -45,7 +42,7 @@ class ShipBotController extends Controller
 		if(TargetPawn != null)
 		{
 			let AB = glm.vec2.create();
-			glm.vec2.sub(AB, TargetPawn.Location, this.Pawn.Location);
+			glm.vec2.sub(AB, TargetPawn.Location, Pawn.Location);
 			let theta = Math.sign(AB[1])*Math.acos(AB[0]/glm.vec2.length(AB));
 			Pawn.Rotation = theta;
 
@@ -61,20 +58,23 @@ class ShipBotController extends Controller
 
 	EstablishTargetPawn()
 	{
-		if(this.TargetPawn == null)
+		let TargetPawn = this.TargetPawnPtr.Deref;
+		let Pawn = this.PawnPtr.Deref;
+		if(TargetPawn == null)
 		{
 			for(let i in this.core.Scene.EntityList)
 			{
 				let ent = this.core.Scene.EntityList[i];
 				if(ent.isChildOfClass(ShipPawn))
 				{
-					if(ent.Controller != null && ent.Controller.isChildOfClass(ShipController))
+
+					if(ent.ControllerPtr.Deref != null && ent.ControllerPtr.Deref.isChildOfClass(ShipController))
 					{
 						let AB = glm.vec2.create();
-						glm.vec2.sub(AB, ent.Location, this.Pawn.Location);
-						if(glm.vec2.length(AB) <= this.TargetRadius && !ent.bDestroyed)
+						glm.vec2.sub(AB, ent.Location, Pawn.Location);
+						if(glm.vec2.length(AB) <= this.TargetRadius)
 						{
-							this.TargetPawn = ent;
+							this.TargetPawnPtr = ent.Ref;
 						}
 					}
 				}
@@ -82,19 +82,16 @@ class ShipBotController extends Controller
 		}
 		else
 		{
-			if(this.TargetPawn != null)
+			if(TargetPawn.ControllerPtr.Deref == null)
 			{
-				if(this.TargetPawn.Controller == null)
-				{
-					this.TargetPawn = null;
-				}
+				TargetPawn = NULL_PTR;
+			}
 
-				let AB = glm.vec2.create();
-				glm.vec2.sub(AB, this.TargetPawn.Location, this.Pawn.Location);
-				if(glm.vec2.length(AB) >= this.LoseRadius)
-				{
-					this.TargetPawn = null;
-				}
+			let AB = glm.vec2.create();
+			glm.vec2.sub(AB, TargetPawn.Location, Pawn.Location);
+			if(glm.vec2.length(AB) >= this.LoseRadius)
+			{
+				this.TargetPawnPtr = NULL_PTR;
 			}
 		}
 	}
