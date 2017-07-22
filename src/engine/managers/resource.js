@@ -1,4 +1,5 @@
-import {Base} from '../base'
+import {Base} from 'engine/base'
+
 
 class Resource extends Base
 {
@@ -23,8 +24,7 @@ class Resource extends Base
 		}
 
 		let gl = this.core.Render.gl;
-		function Compile(s)
-		{
+		let Compile = (s) => {
 			gl.compileShader(s);
 			if(!gl.getShaderParameter(s, gl.COMPILE_STATUS))
 			{
@@ -44,10 +44,14 @@ class Resource extends Base
 		gl.shaderSource(frag, fragsrc);
 		Compile(frag);
 
+		this.Log(`Compiled Shader: ${name}`);
+
 		gl.attachShader(shader.Program, vert);
 		gl.attachShader(shader.Program, frag);
 
 		shader.Link();
+		this.Log(`Linked Shader: ${name}`);
+
 		this.ResourceMap[name] = shader;
 	}
 
@@ -58,6 +62,7 @@ class Resource extends Base
 
 		let img = new Image();
 		img.src = basepath;
+		this.Redundancy++;
 		img.onload = () => {
 			let gl = this.core.Render.gl;
 			var texture = gl.createTexture();
@@ -70,6 +75,8 @@ class Resource extends Base
 			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
 			this.ResourceMap[name].data = texture;
 			this.ResourceMap[name].image = img;
+			this.Log(`Precached Texture: ${name}`);
+			this.Redundancy--;
 		};
 		this.ResourceMap[name] = {
 			data: null,
@@ -87,6 +94,7 @@ class Resource extends Base
 			let path = basepath.replace("%", i);
 			this.LoadTexture(name+"_"+i, path);
 		}
+		this.Log(`Precached Animation: ${name}`);
 	}
 }
 export {Resource};

@@ -1,5 +1,5 @@
-import {Base} from '../base'
-import {Entity} from '../entity'
+import {Base} from 'engine/base'
+import {Entity} from 'engine/entity'
 
 class Scene extends Base
 {

@@ -1,10 +1,10 @@
-import {NULL_PTR} from '../engine/entity'
-import {Controller} from '../framework/controller'
-import {CameraEntity} from './cameraentity';
+import {NULL_PTR} from 'engine/entity'
+import {Controller} from 'framework/controller'
+import {CameraEntity} from 'game/cameraentity'
 
 
-import {ShipPawn} from './shippawn'
-import {ShipController} from './shipcontroller'
+import {ShipPawn} from 'game/shippawn'
+import {ShipController} from 'game/shipcontroller'
 
 import * as glm from 'gl-matrix'
 

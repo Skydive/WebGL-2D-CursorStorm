@@ -1,3 +1,4 @@
+import $ from 'jquery'
 
 class Base
 {
@@ -21,5 +22,18 @@ class Base
 	{
 		return this instanceof cls;
 	}
+
+	Log(s)
+	{
+		console.log(s);
+		if(Base.log.elementid != null)
+		{
+			let e = $(`#${Base.log.elementid}`);
+			e.append(`[${this.constructor.name}] -> ${s}<br/>`);
+			e.scrollTop(e[0].scrollHeight);
+		}
+	}
 }
+Base.log = {};
+Base.log.elementid = null;
 export {Base};

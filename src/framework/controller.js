@@ -1,4 +1,4 @@
-import {Entity, NULL_PTR} from '../engine/entity'
+import {Entity, NULL_PTR} from 'engine/entity'
 
 class Controller extends Entity
 {

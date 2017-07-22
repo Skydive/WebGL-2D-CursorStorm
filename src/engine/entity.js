@@ -1,7 +1,7 @@
-import {Base} from './base'
-import {Transform} from './mixins/transform'
-import {CollisionComponent} from './components/collisioncomponent'
-import {PhysicsComponent} from './components/physicscomponent'
+import {Base} from 'engine/base'
+import {Transform} from 'engine/mixins/transform'
+import {CollisionComponent} from 'engine/components/collisioncomponent'
+import {PhysicsComponent} from 'engine/components/physicscomponent'
 
 import * as glm from 'gl-matrix'
 
@@ -37,6 +37,9 @@ class Entity extends Transform(Base)
 		this.bDestroyed = false;
 		this.bCollision = false;
 		this.bPhysics = false;
+
+		this.Collision = null;
+		this.Physics = null;
 
 		this.bLifeSpan = false;
 		this.LifeSpan = 0;

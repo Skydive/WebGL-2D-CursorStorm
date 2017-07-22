@@ -1,4 +1,4 @@
-import {Base} from '../base'
+import {Base} from 'engine/base'
 
 import * as glm from 'gl-matrix'
 /*

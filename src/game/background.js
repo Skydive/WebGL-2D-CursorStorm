@@ -1,4 +1,4 @@
-import {Entity, NULL_PTR} from '../engine/entity'
+import {Entity, NULL_PTR} from 'engine/entity'
 
 import * as glm from 'gl-matrix'
 
@@ -8,13 +8,15 @@ class BackgroundEntity extends Entity
 	{
 		super();
 		this.TargetPtr = NULL_PTR;
-		this.Scale = [0.25, 0.25];
+		this.Scale = [0.9, 0.9];
+		this.default = {};
+		this.default.Scale = glm.vec2.clone(this.Scale);
 		this.ParralaxFactor = 0.95;
 	}
 
 	static Precache(core)
 	{
-		core.Resource.LoadTexture("Background_Space", "../res/background/back_1.jpg");
+		core.Resource.LoadTexture("Background_Space", "res/tex/background/back_1.jpg");
 	}
 
 	BeginPlay()
@@ -28,6 +30,8 @@ class BackgroundEntity extends Entity
 
 	Tick(dt)
 	{
+		this.Scale[0] = this.default.Scale[0]/this.core.Render.pipeline.CameraMag[0];
+		this.Scale[1] = this.default.Scale[1]/this.core.Render.pipeline.CameraMag[1];
 		let Target = this.TargetPtr.Deref;
 		if(Target != null)
 		{

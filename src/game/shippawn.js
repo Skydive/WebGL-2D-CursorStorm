@@ -1,10 +1,10 @@
-import {Entity} from '../engine/entity'
-import {Animation} from '../engine/animation'
-import {PhysicsComponent} from '../engine/components/physicscomponent'
-import {Pawn} from '../framework/pawn'
-import {Effect} from '../framework/effect'
+import {Entity} from 'engine/entity'
+import {Animation} from 'engine/animation'
+import {PhysicsComponent} from 'engine/components/physicscomponent'
+import {Pawn} from 'framework/pawn'
+import {Effect} from 'framework/effect'
 
-import {ShipProjectile} from './shipprojectile'
+import {ShipProjectile} from 'game/shipprojectile'
 
 import * as glm from 'gl-matrix'
 
@@ -13,10 +13,10 @@ class ShipPawn extends Pawn
 	constructor()
 	{
 		super();
+		this.OffsetRotation = -90 * (Math.PI/180);
+
 		this.bPhysics = true;
 		this.bCollision = true;
-
-		this.OffsetRotation = -90 * (Math.PI/180);
 
 		this.Force = 240;
 		this.AngularVelocity = 4;
@@ -31,21 +31,21 @@ class ShipPawn extends Pawn
 
 	static Precache(core)
 	{
-		core.Resource.LoadTexture("Texture_Ship_Base", "../res/ship/base.png");
-		core.Resource.LoadTexture("Texture_Ship_Window", "../res/ship/window.png");
+		core.Resource.LoadTexture("Texture_Ship_Base", "res/tex/ship/base.png");
+		core.Resource.LoadTexture("Texture_Ship_Window", "res/tex/ship/window.png");
 
-		core.Resource.LoadAnimation("Animation_Ship_Wings_Idle", "../res/ship/wings_idle_%.png", 2);
-		core.Resource.LoadAnimation("Animation_Ship_Thrust_On", "../res/ship/thrust_on_%.png", 4);
-		core.Resource.LoadAnimation("Animation_Ship_Cannon_Fire", "../res/ship/cannon_fire_%.png", 2);
+		core.Resource.LoadAnimation("Animation_Ship_Wings_Idle", "res/tex/ship/wings_idle_%.png", 2);
+		core.Resource.LoadAnimation("Animation_Ship_Thrust_On", "res/tex/ship/thrust_on_%.png", 4);
+		core.Resource.LoadAnimation("Animation_Ship_Cannon_Fire", "res/tex/ship/cannon_fire_%.png", 2);
 	}
 
 	BeginPlay()
 	{
 		super.BeginPlay();
+		this.Physics.ResistanceFactor = 0.99;
+
 		this.Collision.CollisionClassList = [ShipPawn];
 		this.Collision.RadiusScale = 0.86;
-
-		this.Physics.ResistanceFactor = 0.99;
 
 		this.ThrustAnimationOn = Animation.Create(this.core, "Animation_Ship_Thrust_On");
 		this.WingsAnimationIdle = Animation.Create(this.core, "Animation_Ship_Wings_Idle");

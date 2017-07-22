@@ -1,4 +1,4 @@
-import {Base} from './base'
+import {Base} from 'engine/base'
 
 class Animation extends Base
 {

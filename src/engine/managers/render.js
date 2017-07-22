@@ -1,9 +1,8 @@
-import {Base} from '../base'
+import {Base} from 'engine/base'
 
-import {EntityShader} from '../shader'
-import EntShaderVSrc from '../shaders/Entity.v.glsl';
-import EntShaderFSrc from '../shaders/Entity.f.glsl';
-
+import {EntityShader} from 'engine/shader'
+import EntShaderVSrc from 'engine/shaders/Entity.v.glsl'
+import EntShaderFSrc from 'engine/shaders/Entity.f.glsl'
 
 import * as glm from 'gl-matrix'
 
@@ -41,6 +40,7 @@ class Pipeline extends Base
 	{
 		let w = this.core.Render.displayWidth;
 		let h = this.core.Render.displayHeight;
+		console.log(w, h);
 		let V = glm.mat3.create();
 
 		glm.mat3.scale(V, V, [1/w,  1/h]);
@@ -154,7 +154,7 @@ class Render extends Base
 	RenderClear()
 	{
 		let gl = this.gl;
-		gl.clearColor(0.1, 0.05, 0.05, 1.0);
+		gl.clearColor(0.5, 0.05, 0.05, 1.0);
 		gl.clear(gl.COLOR_BUFFER_BIT);
 	}
 

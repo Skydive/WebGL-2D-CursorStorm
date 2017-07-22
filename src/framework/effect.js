@@ -1,5 +1,5 @@
-import {Entity} from '../engine/entity'
-import {Animation} from '../engine/animation'
+import {Entity} from 'engine/entity'
+import {Animation} from 'engine/animation'
 
 class Effect extends Entity
 {

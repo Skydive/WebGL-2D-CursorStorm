@@ -1,8 +1,8 @@
-import {Entity} from '../engine/entity'
-import {Animation} from '../engine/animation'
-import {Effect} from '../framework/effect'
+import {Entity} from 'engine/entity'
+import {Animation} from 'engine/animation'
+import {Effect} from 'framework/effect'
 
-import {ShipPawn} from './shippawn'
+import {ShipPawn} from 'game/shippawn'
 
 import * as glm from 'gl-matrix'
 
@@ -19,14 +19,14 @@ class ShipProjectile extends Entity
 
 	static Precache(core)
 	{
-		core.Resource.LoadTexture("Texture_Ship_Projectile", "../res/ship/projectile.png");
-		core.Resource.LoadAnimation("Animation_Projectile_Explode", "../res/ship/projectile_explode_%.png", 3);
+		core.Resource.LoadTexture("Texture_Ship_Projectile", "res/tex/ship/projectile.png");
+		core.Resource.LoadAnimation("Animation_Projectile_Explode", "res/tex/ship/projectile_explode_%.png", 3);
 	}
 
 	BeginPlay()
 	{
 		super.BeginPlay();
-		this.Collision.CollisionClassList = [ShipPawn];
+		this.Collision.bCollisionExclude = true;
 		this.Collision.RadiusScale = 0.5;
 	}
 
@@ -34,14 +34,17 @@ class ShipProjectile extends Entity
 	{
 		if(collided != this.owner)
 		{
-			collided.Health -= 10;
-			let AB = glm.vec2.create();
+			if(collided.isChildOfClass(ShipPawn))
+				collided.Health -= 10;
 
-			glm.vec2.sub(AB, this.Location, this.owner.Location);
-			glm.vec2.normalize(AB, AB);
-			glm.vec2.scale(AB, AB, 25);
-			collided.Physics.ApplyImpulse(AB);
-
+			if(collided.Physics != null)
+			{
+				let AB = glm.vec2.create();
+				glm.vec2.sub(AB, this.Location, this.owner.Location);
+				glm.vec2.normalize(AB, AB);
+				glm.vec2.scale(AB, AB, 25);
+				collided.Physics.ApplyImpulse(AB);
+			}
 			this.Destroy();
 		}
 	}

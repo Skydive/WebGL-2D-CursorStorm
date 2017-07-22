@@ -1,4 +1,4 @@
-import {Base} from '../base'
+import {Base} from 'engine/base'
 
 const KEYCODE_MAX = 223;
 const MOUSECODE_MAX = 223;
@@ -28,7 +28,8 @@ class Input extends Base
 		this.phone.touch.Location = [0, 0];
 	}
 
-	BeginPlay()
+	BeginPlay() {}
+	BindEvents()
 	{
 		document.addEventListener("keyup", (event) => {
 			this.OnKeyUp(event.which);

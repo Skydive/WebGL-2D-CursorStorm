@@ -1,7 +1,9 @@
-import {NULL_PTR} from '../engine/entity'
-import {Controller} from '../framework/controller'
-import {CameraEntity} from './cameraentity';
+import {NULL_PTR} from 'engine/entity'
+import {Controller} from 'framework/controller'
+import {CameraEntity} from 'game/cameraentity'
+
 import $ from 'jquery'
+import * as glm from 'gl-matrix'
 
 class ShipController extends Controller
 {
@@ -15,7 +17,7 @@ class ShipController extends Controller
 		    "width": "auto",
 			"height": "auto",
 			"color": "#FFFFFF",
-		    "border": "2px solid #ccc",
+		    "border": "1px solid #ccc",
 			"padding": "5px",
 			"text-align": "center",
 			"bottom": "10%",
@@ -31,6 +33,7 @@ class ShipController extends Controller
 	BeginPlay()
 	{
 		super.BeginPlay();
+		this.core.Render.pipeline.CameraMag = [3, 3];
 		this.CameraPtr = this.Spawn(CameraEntity).Ref;
 	}
 
@@ -55,6 +58,7 @@ class ShipController extends Controller
 		}
 		else
 		{
+			$("#ship_hud_health").html("");
 			$("#ship_hud_location").html("");
 		}
 	}

@@ -1,4 +1,4 @@
-import {Entity, NULL_PTR} from '../engine/entity'
+import {Entity, NULL_PTR} from 'engine/entity'
 
 import * as glm from 'gl-matrix'
 
@@ -25,28 +25,24 @@ class CameraEntity extends Entity
 		this.Physics.ResistanceFactor = 0.8;
 	}
 
-	Tick(dt)
+	PostTick(dt)
 	{
 		let Target = this.TargetPtr.Deref;
 		if(Target != null)
 		{
-			let force = glm.vec2.create();
-			let distance = Math.min(glm.vec2.distance(this.Location, Target.Location), this.FallOff);
-			distance /= 1000;
-			glm.vec3.sub(force, Target.Location, this.Location);
-			glm.vec3.normalize(force, force);
-			glm.vec3.scale(force, force, this.Force*distance);
-			this.Physics.ApplyForce(force, dt);
-
 			let AB = glm.vec2.create();
+			glm.vec2.sub(AB, Target.Location, this.Location);
+			let r = Math.min(glm.vec2.length(AB), this.FallOff)/10;
+			glm.vec2.normalize(AB, AB);
+			glm.vec2.scale(AB, AB, this.Force*r);
+			this.Physics.ApplyForce(AB, dt);
+
 			glm.vec2.sub(AB, Target.Location, this.Location);
 			if(glm.vec2.length(AB)/this.MaxSpeed >= this.Timeout)
 			{
-				this.Location = glm.vec2.copy(Target.Location);
+				this.Location = glm.vec2.clone(Target.Location);
 			}
 		}
-
-		super.Tick(dt);
 
 		if(glm.vec2.length(this.Physics.Velocity) > this.MaxSpeed)
 		{
@@ -56,6 +52,8 @@ class CameraEntity extends Entity
 
 		this.core.Render.pipeline.CameraLocation = glm.vec2.clone(this.Location);
 		this.core.Render.pipeline.CameraRotation = this.Rotation;
+
+		super.PostTick(dt);
 	}
 }
 export {CameraEntity};
