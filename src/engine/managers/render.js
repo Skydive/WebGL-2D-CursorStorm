@@ -7,7 +7,8 @@ import EntShaderFSrc from 'engine/shaders/Entity.f.glsl'
 import * as glm from 'gl-matrix'
 
 
-const BASIS_VECTOR = [1, 0];
+const UP_VECTOR = [0, 1, 0];
+const FORWARD_VECTOR = [0, 0, 1];
 
 const RECT_VERTICES = [
 	-1, 1, 0,
@@ -30,35 +31,46 @@ class Pipeline extends Base
 	constructor()
 	{
 		super();
-		this.CameraLocation = glm.vec2.create();
-		this.CameraRotation = 0;
+		this.CameraLocation = glm.vec3.create();
+		this.CameraRotation = glm.quat.create();
 		this.CameraMag = [1, 1];
 	}
 
-	GetProjectionMatrix(w, h) { return null; }
-	GetViewMatrix()
+	GetProjectionMatrix()
 	{
 		let w = this.core.Render.displayWidth;
 		let h = this.core.Render.displayHeight;
-		console.log(w, h);
-		let V = glm.mat3.create();
-
-		glm.mat3.scale(V, V, [1/w,  1/h]);
-		glm.mat3.scale(V, V, [this.CameraMag[0], this.CameraMag[1]])
-		glm.mat3.translate(V, V, [-this.CameraLocation[0], -this.CameraLocation[1]]);
-
-
-		//glm.mat3.translate(V, V, [w/2 , h/2]);
-		//glm.mat3.transpose(V, V);
-		return V
+		let aspect = w/h;
+		let P = glm.mat4.create();
+		glm.mat4.perspective(P, 120, aspect, 0.1, 100000);
+		return P;
 	}
-	GetModelMatrix(loc, rad, scale)
-	{
-		let M = glm.mat3.create();
 
-		glm.mat3.translate(M, M, loc);
-		glm.mat3.rotate(M, M, rad);
-		glm.mat3.scale(M, M, scale);
+	GetViewMatrix()
+	{
+		let V = glm.mat4.create();
+		glm.mat4.lookAt(V, [0, 0, 0], FORWARD_VECTOR, UP_VECTOR);
+
+		let invrotq = glm.quat.create(); glm.quat.conjugate(invrotq, this.CameraRotation);
+		let R = glm.mat4.create(); glm.mat4.fromQuat(R, invrotq);
+		glm.mat4.multiply(V, V, R);
+
+		let invpos = glm.vec3.create(); glm.vec3.negate(invpos, this.CameraLocation);
+		let T = glm.mat4.create(); glm.mat4.translate(T, T, invpos);
+		glm.mat4.multiply(V, V, T);
+		return V;
+	}
+
+	GetModelMatrix(loc, rot, scale)
+	{
+		let M = glm.mat4.create();
+
+		glm.mat4.translate(M, M, loc);
+
+		let R = glm.mat4.create(); glm.mat4.fromQuat(R, rot);
+		glm.mat4.multiply(M, M, R);
+
+		glm.mat4.scale(M, M, scale);
 
 		return M;
 	}
@@ -89,7 +101,8 @@ class Render extends Base
 
 		try
 		{
-			this.gl = this.canvas.getContext("webgl");
+			this.gl = this.canvas.getContext("webgl")
+			|| this.canvas.getContext("experimental-webgl");
 		}
 		catch(e)
 		{
@@ -116,6 +129,10 @@ class Render extends Base
 			}
 		}
 		this.ResizeViewport();
+
+
+		gl.enable(gl.DEPTH_TEST);
+		gl.depthFunc(gl.LESS);
 
 		this.PrimitiveBuffers.Square = {};
 		let s = this.PrimitiveBuffers.Square;
@@ -154,8 +171,8 @@ class Render extends Base
 	RenderClear()
 	{
 		let gl = this.gl;
-		gl.clearColor(0.5, 0.05, 0.05, 1.0);
-		gl.clear(gl.COLOR_BUFFER_BIT);
+		gl.clearColor(0.1, 0.05, 0.05, 1.0);
+		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	}
 
 	RenderPresent()
@@ -174,9 +191,9 @@ class Render extends Base
 		this.RenderBackgroundFunc = func;
 	}
 
-	DrawTexture(transform, texname, color)
+	DrawTexture(transform, texname, depth, color)
 	{
-		color = (color == undefined) ? [1.0, 1.0, 1.0, 1.0] : [color[0], color[1], color[2], 1.0];
+		color = [color[0], color[1], color[2], 1.0];
 
 		let tex = this.core.Resource.Get(texname);
 		let gl = this.core.Render.gl;
@@ -194,14 +211,21 @@ class Render extends Base
 
 		let pipeline = this.core.Render.pipeline;
 
+		let P = pipeline.GetProjectionMatrix();
+
 		let V = pipeline.GetViewMatrix();
-		gl.uniformMatrix3fv(shader.uV, false, V);
+
+		let rotq = glm.quat.create();
+		glm.quat.setAxisAngle(rotq, [0, 0, 1], transform.Rotation+transform.OffsetRotation);
 
 		let M = pipeline.GetModelMatrix(
-			transform.Location,
-			transform.Rotation+transform.OffsetRotation,
-			[w*transform.Scale[0], h*transform.Scale[1]]);
-		gl.uniformMatrix3fv(shader.uM, false, M);
+			[transform.Location[0], transform.Location[1], depth],
+			rotq,
+			[w*transform.Scale[0], h*transform.Scale[1], 1.0]);
+
+		gl.uniformMatrix4fv(shader.uM, false, M);
+		gl.uniformMatrix4fv(shader.uV, false, V);
+		gl.uniformMatrix4fv(shader.uP, false, P);
 
 		gl.uniform4fv(shader.uColor, new Float32Array(color));
 
@@ -222,4 +246,4 @@ class Render extends Base
 		shader.Disable();
 	}
 }
-export {BASIS_VECTOR, Render};
+export {FORWARD_VECTOR, UP_VECTOR, Render};

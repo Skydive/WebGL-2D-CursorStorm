@@ -21,17 +21,18 @@ function Precache()
 			}
 		}, 500);
 	}, 0);
-	PrecacheCompleted();
 }
 
 function PrecacheCompleted()
 {
 	$("#startbutton").removeClass("disabled");
 	$("#startbutton").addClass("enabled");
+	OnStart();
 }
 
 function OnStart()
 {
+	Base.log.elementid = null;
 	$("#loadingdiv").remove();
 	core.Start();
 }

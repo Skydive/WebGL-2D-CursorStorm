@@ -27,7 +27,7 @@
     "webpack-glsl-loader": "^1.0.1"
   },
   "scripts": {
-    "sync": "rsync -avz ./ khalid@82.31.32.214:/home/khalid/public_html/WebGL-Cursor-Storm/ --exclude 'node_modules/' --delete",
+    "sync": "npm run build && rsync -avz ./ khalid@82.31.32.214:/home/khalid/public_html/WebGL-Cursor-Storm/ --exclude 'node_modules/' --delete",
     "watch": "webpack --progress --colors --watch",
 	"build": "webpack --progress --colors",
     "start": "webpack-dev-server --progress --colors --open"

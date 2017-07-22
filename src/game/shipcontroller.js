@@ -25,9 +25,13 @@ class ShipController extends Controller
 			"transform": "translateX(-50%)",
 		});
 		$("#ship_hud").append("<p id='ship_hud_fps'></p>");
-		$("#ship_hud").append("<br/><p id='ship_hud_health'></p>");
-		$("#ship_hud").append("<br/><p id='ship_hud_location'></p>");
-		$("#ship_hud").append("<br/><p id='ship_hud_cameralocation'></p>");
+		$("#ship_hud").append("<p id='ship_hud_health'></p>");
+		$("#ship_hud").append("<p id='ship_hud_drag'></p>");
+		$("#ship_hud").append("<p id='ship_hud_location'></p>");
+		$("#ship_hud").append("<p id='ship_hud_cameralocation'></p>");
+
+		this.LastDragTime = 0;
+		this.DragInterval = 0.25;
 	}
 
 	BeginPlay()
@@ -50,11 +54,12 @@ class ShipController extends Controller
 		this.PhoneControls(dt);
 
 		$("#ship_hud_fps").html(`FPS: ${(1/dt).toFixed(0)}`);
-		$("#ship_hud_cameralocation").html(`Camera Location: [${Camera.Location[0].toFixed(0)}, ${Camera.Location[1].toFixed(0)}]`);
+		$("#ship_hud_cameralocation").html(`Cam Location: [${Camera.Location[0].toFixed(0)}, ${Camera.Location[1].toFixed(0)}]`);
 		if(Pawn != null)
 		{
 			$("#ship_hud_health").html(`HP ${Pawn.Health}`);
 			$("#ship_hud_location").html(`Location: [${Pawn.Location[0].toFixed(0)}, ${Pawn.Location[1].toFixed(0)}]`);
+			$("#ship_hud_drag").html(`Stabilisation (P): ${Pawn.bDrag}`);
 		}
 		else
 		{
@@ -79,6 +84,12 @@ class ShipController extends Controller
 
 		if(this.core.Input.KeyDown("SPACE"))
 			Pawn.FireCannon(dt);
+
+		if(this.core.Input.KeyDown("P") && this.core.GetTime() - this.LastDragTime > this.DragInterval)
+		{
+			Pawn.bDrag = !Pawn.bDrag;
+			this.LastDragTime = this.core.GetTime();
+		}
 	}
 
 	PhoneControls(dt)

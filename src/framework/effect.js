@@ -36,7 +36,7 @@ class Effect extends Entity
 
 	Render()
 	{
-		this.DrawTexture(this.Sequence.GetFrame());
+		this.DrawTexture(this.Sequence.GetFrame(), 10);
 	}
 }
 export {Effect};

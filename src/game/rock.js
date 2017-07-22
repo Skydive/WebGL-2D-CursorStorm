@@ -80,7 +80,7 @@ class Rock extends Entity
 
 	Render()
 	{
-		this.DrawTexture("Texture_Rock")
+		this.DrawTexture("Texture_Rock", 1)
 	}
 }
 export {Rock};

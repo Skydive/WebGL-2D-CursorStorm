@@ -67,9 +67,13 @@ class Entity extends Transform(Base)
 
 	// Render
 	Render(){}
-	DrawTexture(texname, color)
+	DrawTexture(texname, depth, color)
 	{
-		this.core.Render.DrawTexture(this, texname, color);
+		if(depth == undefined)
+			depth = 0;
+		if(color == undefined)
+			color = [1.0, 1.0, 1.0];
+		this.core.Render.DrawTexture(this, texname, depth, color);
 	}
 
 	// Ticks

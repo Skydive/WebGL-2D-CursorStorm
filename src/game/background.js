@@ -23,7 +23,7 @@ class BackgroundEntity extends Entity
 	{
 		super.BeginPlay();
 		this.core.Render.SetRenderBackground(() => {
-			this.DrawTexture("Background_Space");
+			this.DrawTexture("Background_Space", -10);
 		});
 	}
 

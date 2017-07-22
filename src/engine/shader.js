@@ -60,6 +60,7 @@ class EntityShader extends Shader
 
 		this.uM = gl.getUniformLocation(this.Program, "M");
 		this.uV = gl.getUniformLocation(this.Program, "V");
+		this.uP = gl.getUniformLocation(this.Program, "P");
 
 		this.uColor = gl.getUniformLocation(this.Program, "Color");
 		this.uTexture = gl.getUniformLocation(this.Program, "Texture");

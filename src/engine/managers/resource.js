@@ -7,6 +7,7 @@ class Resource extends Base
 	{
 		super();
 		this.ResourceMap = {};
+		this.Redundancy = 0;
 	}
 
 	BeginPlay(){}

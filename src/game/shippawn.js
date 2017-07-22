@@ -27,6 +27,8 @@ class ShipPawn extends Pawn
 		this.Color = [1.0, 0.3, 0.3];
 		this.default = {};
 		this.default.Color = this.Color;
+
+		this.bDrag = true;
 	}
 
 	static Precache(core)
@@ -42,7 +44,6 @@ class ShipPawn extends Pawn
 	BeginPlay()
 	{
 		super.BeginPlay();
-		this.Physics.ResistanceFactor = 0.99;
 
 		this.Collision.CollisionClassList = [ShipPawn];
 		this.Collision.RadiusScale = 0.86;
@@ -54,6 +55,7 @@ class ShipPawn extends Pawn
 
 	Tick(dt)
 	{
+		this.Physics.ResistanceFactor = this.bDrag ? 0.99 : 1.00;
 		this.Collision.FromTexture("Texture_Ship_Base");
 		super.Tick(dt);
 	}
@@ -64,18 +66,18 @@ class ShipPawn extends Pawn
 		if(sm > 20)
 		{
 			let n = Math.min(Math.floor(sm / 300 * this.ThrustAnimationOn.Count), this.ThrustAnimationOn.Count-1);
-			this.DrawTexture(this.ThrustAnimationOn.GetFrameNum(n));
+			this.DrawTexture(this.ThrustAnimationOn.GetFrameNum(n), 0);
 		}
 
-		this.DrawTexture("Texture_Ship_Base");
+		this.DrawTexture("Texture_Ship_Base", 1);
 
-		this.DrawTexture(this.CannonAnimationFire.GetFrameNum(this.core.GetTime() - this.LastFiredTime < 0.2*this.FireInterval ? 1 : 0), this.Color);
-		this.DrawTexture(this.WingsAnimationIdle.GetFrameNum(this.bForwardThrust ? 1 : 0), this.Color); this.bForwardThrust = false;
+		this.DrawTexture(this.CannonAnimationFire.GetFrameNum(this.core.GetTime() - this.LastFiredTime < 0.2*this.FireInterval ? 1 : 0), 5, this.Color);
+		this.DrawTexture(this.WingsAnimationIdle.GetFrameNum(this.bForwardThrust ? 1 : 0), 10, this.Color); this.bForwardThrust = false;
 
 		// TODO: Remake this in hsl <--> rgb
 		glm.vec2.lerp(this.Color, [0.3, 0.3, 0.3], this.default.Color, this.Health/this.MaxHealth);
 
-		this.DrawTexture("Texture_Ship_Window", [0.9, 0.9, 0.9]);
+		this.DrawTexture("Texture_Ship_Window", 5, [0.9, 0.9, 0.9]);
 	}
 
 	OnCollision(collided, dt)

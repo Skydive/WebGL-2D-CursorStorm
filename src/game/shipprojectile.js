@@ -59,7 +59,7 @@ class ShipProjectile extends Entity
 
 	Render()
 	{
-		this.DrawTexture("Texture_Ship_Projectile");
+		this.DrawTexture("Texture_Ship_Projectile", 1);
 	}
 }
 export {ShipProjectile};

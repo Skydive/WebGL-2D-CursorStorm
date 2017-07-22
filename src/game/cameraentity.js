@@ -1,5 +1,7 @@
 import {Entity, NULL_PTR} from 'engine/entity'
 
+import {FORWARD_VECTOR, UP_VECTOR} from 'engine/managers/render'
+
 import * as glm from 'gl-matrix'
 
 class CameraEntity extends Entity
@@ -17,16 +19,43 @@ class CameraEntity extends Entity
 		this.FallOff = 500;
 
 		this.Timeout = 1;
+
+		this.Height = 1200;
+
+		// LERP stuff
+		this.SpringTime = 1;
+
+		this.InitialRotation = glm.quat.create();
+		this.FinalRotation = glm.quat.create();
+
+		this.InitialHeight = 9000;
+		this.FinalHeight = this.Height;
+
 	}
 
 	BeginPlay()
 	{
 		super.BeginPlay();
 		this.Physics.ResistanceFactor = 0.8;
+
+		glm.quat.setAxisAngle(this.InitialRotation, [0, 1, 0], 3*Math.PI/4);
+		glm.quat.setAxisAngle(this.FinalRotation, [0, 1, 0], Math.PI);
+		this.core.Render.pipeline.CameraLocation = [0, 0, this.Height];
 	}
 
 	PostTick(dt)
 	{
+
+		if(this.core.GetElapsedTime() < this.SpringTime)
+		{
+			let t = Math.min(1.0, this.core.GetElapsedTime()/this.SpringTime);
+			glm.quat.lerp(this.core.Render.pipeline.CameraRotation, this.InitialRotation, this.FinalRotation, t);
+
+			this.Height = this.InitialHeight + (this.FinalHeight-this.InitialHeight) * t;
+			this.core.Render.pipeline.CameraLocation = [0, 0, this.Height];
+			return;
+		}
+
 		let Target = this.TargetPtr.Deref;
 		if(Target != null)
 		{
@@ -50,8 +79,10 @@ class CameraEntity extends Entity
 			glm.vec2.scale(this.Physics.Velocity, this.Physics.Velocity, this.MaxSpeed);
 		}
 
-		this.core.Render.pipeline.CameraLocation = glm.vec2.clone(this.Location);
-		this.core.Render.pipeline.CameraRotation = this.Rotation;
+
+		this.core.Render.pipeline.CameraLocation[0] = this.Location[0];
+		this.core.Render.pipeline.CameraLocation[1] = this.Location[1];
+		//this.core.Render.pipeline.CameraRotation = this.Rotation;
 
 		super.PostTick(dt);
 	}
