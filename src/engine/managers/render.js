@@ -40,9 +40,12 @@ class Pipeline extends Base
 	{
 		let w = this.core.Render.displayWidth;
 		let h = this.core.Render.displayHeight;
-		let aspect = w/h;
 		let P = glm.mat4.create();
-		glm.mat4.perspective(P, 120, aspect, 0.1, 100000);
+		//let aspect = w/h;
+		//glm.mat4.perspective(P, 120, aspect, 0.1, 100000);
+		w = 2*w/this.CameraMag[0];
+		h = 2*h/this.CameraMag[1];
+		glm.mat4.ortho(P, -w/2, w/2, -h/2, h/2, 0.1, 100000)
 		return P;
 	}
 

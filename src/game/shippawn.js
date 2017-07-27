@@ -5,6 +5,7 @@ import {Pawn} from 'framework/pawn'
 import {Effect} from 'framework/effect'
 
 import {ShipProjectile} from 'game/shipprojectile'
+import {Coin} from 'game/coin'
 
 import * as glm from 'gl-matrix'
 
@@ -66,18 +67,18 @@ class ShipPawn extends Pawn
 		if(sm > 20)
 		{
 			let n = Math.min(Math.floor(sm / 300 * this.ThrustAnimationOn.Count), this.ThrustAnimationOn.Count-1);
-			this.DrawTexture(this.ThrustAnimationOn.GetFrameNum(n), 0);
+			this.DrawTexture(this.ThrustAnimationOn.GetFrameNum(n), 1);
 		}
 
 		this.DrawTexture("Texture_Ship_Base", 1);
 
-		this.DrawTexture(this.CannonAnimationFire.GetFrameNum(this.core.GetTime() - this.LastFiredTime < 0.2*this.FireInterval ? 1 : 0), 5, this.Color);
-		this.DrawTexture(this.WingsAnimationIdle.GetFrameNum(this.bForwardThrust ? 1 : 0), 10, this.Color); this.bForwardThrust = false;
+		this.DrawTexture(this.CannonAnimationFire.GetFrameNum(this.core.GetTime() - this.LastFiredTime < 0.2*this.FireInterval ? 1 : 0), 1, this.Color);
+		this.DrawTexture(this.WingsAnimationIdle.GetFrameNum(this.bForwardThrust ? 1 : 0), 3, this.Color); this.bForwardThrust = false;
 
 		// TODO: Remake this in hsl <--> rgb
 		glm.vec2.lerp(this.Color, [0.3, 0.3, 0.3], this.default.Color, this.Health/this.MaxHealth);
 
-		this.DrawTexture("Texture_Ship_Window", 5, [0.9, 0.9, 0.9]);
+		this.DrawTexture("Texture_Ship_Window", 2, [0.9, 0.9, 0.9]);
 	}
 
 	OnCollision(collided, dt)
@@ -98,8 +99,11 @@ class ShipPawn extends Pawn
 			let ExplodeEffect = this.Spawn(Effect);
 			ExplodeEffect.Location = [this.Location[0] + rx, this.Location[1] + ry];
 			ExplodeEffect.Sequence = Animation.Create(this.core, "Animation_Projectile_Explode");
-			ExplodeEffect.Sequence.Duration = 0.25;
+			ExplodeEffect.Sequence.Duration = Math.random()/2;
 		}
+
+		let c = this.Spawn(Coin);
+		c.Location = glm.vec2.clone(this.Location);
 	}
 
 	ApplyThrust(scale, dt)

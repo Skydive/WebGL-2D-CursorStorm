@@ -30,6 +30,30 @@ class ShipController extends Controller
 		$("#ship_hud").append("<p id='ship_hud_location'></p>");
 		$("#ship_hud").append("<p id='ship_hud_cameralocation'></p>");
 
+		$("body").append("<div id='ship_hud_top'></div>");
+		$("#ship_hud_top").css({
+		    "position": "absolute",
+		    "width": "auto",
+			"height": "auto",
+			"color": "#FFFFFF",
+		    "border": "1px solid #ccc",
+			"padding": "5px",
+			"text-align": "center",
+			"top": "0%",
+			"right": "0%"
+		});
+		$("#ship_hud_top").append("<img id='money_img' src='res/tex/icons/money.png'></img>");
+		$('#money_img').css({
+			"vertical-align": "middle"
+		});
+		$("#ship_hud_top").append("<span id='ship_hud_money'></span>");
+		$('#ship_hud_money').css({
+			"font-weight": "bold",
+			"font-size": "x-large"
+		});
+
+		this.Money = 0;
+
 		this.LastDragTime = 0;
 		this.DragInterval = 0.25;
 	}
@@ -55,6 +79,7 @@ class ShipController extends Controller
 
 		$("#ship_hud_fps").html(`FPS: ${(1/dt).toFixed(0)}`);
 		$("#ship_hud_cameralocation").html(`Cam Location: [${Camera.Location[0].toFixed(0)}, ${Camera.Location[1].toFixed(0)}]`);
+		$("#ship_hud_money").html(`€${this.Money}`);
 		if(Pawn != null)
 		{
 			$("#ship_hud_health").html(`HP ${Pawn.Health}`);

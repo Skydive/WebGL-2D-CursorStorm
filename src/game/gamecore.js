@@ -5,6 +5,7 @@ import {ShipBotController} from 'game/shipbotcontroller'
 import {ShipPawn} from 'game/shippawn'
 import {ShipProjectile} from 'game/shipprojectile'
 
+import {Coin} from 'game/coin'
 import {BackgroundEntity} from 'game/background'
 
 import {Rock} from 'game/rock'
@@ -35,6 +36,7 @@ class GameCore extends Core
 		BackgroundEntity.Precache(this);
 		ShipProjectile.Precache(this);
 		ShipPawn.Precache(this);
+		Coin.Precache(this);
 		Rock.Precache(this);
 	}
 
@@ -74,8 +76,17 @@ class GameCore extends Core
 		e.Color = e.default.Color;
 		this.Scene.Spawn(ShipBotController).Possess(e.Ref);
 
-		let rock = this.Scene.Spawn(Rock);
-		rock.Location = [0, -1000];
+		let c = this.Scene.Spawn(Coin);
+		c.Type = "bronze";
+		c.Location = [0, -500];
+
+		c = this.Scene.Spawn(Coin);
+		c.Type = "silver";
+		c.Location = [50, -500];
+
+		c = this.Scene.Spawn(Coin);
+		c.Type = "gold";
+		c.Location = [100, -500];
 	}
 
 	Tick(dt)
@@ -84,22 +95,13 @@ class GameCore extends Core
 
 		this.PawnPtrList = this.PawnPtrList.filter(ptr => ptr.Deref != null);
 		super.Tick(dt);
-		if(this.Input.KeyDown("LEFT"))
+		if(this.Input.KeyDown("LEFT") || this.Input.KeyDown("RIGHT"))
 		{
 			if(this.GetTime() - this.LastSwitchTime > this.SwitchInterval)
 			{
-				this.SwitchIndex = (this.SwitchIndex - 1) % this.PawnPtrList.length;
-				if(this.SwitchIndex < 0)
-					this.SwitchIndex = this.PawnPtrList.length + this.SwitchIndex;
-				C.Possess(this.PawnPtrList[this.SwitchIndex]);
-				this.LastSwitchTime = this.GetTime();
-			}
-		}
-		if(this.Input.KeyDown("RIGHT"))
-		{
-			if(this.GetTime() - this.LastSwitchTime > this.SwitchInterval)
-			{
-				this.SwitchIndex = (this.SwitchIndex + 1) % this.PawnPtrList.length;
+				let n = this.Input.KeyDown("LEFT") ? -1 :
+					   (this.Input.KeyDown("RIGHT")?  1 : 0);
+				this.SwitchIndex = (this.SwitchIndex - n) % this.PawnPtrList.length;
 				if(this.SwitchIndex < 0)
 					this.SwitchIndex = this.PawnPtrList.length + this.SwitchIndex;
 				C.Possess(this.PawnPtrList[this.SwitchIndex]);

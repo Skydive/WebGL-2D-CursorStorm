@@ -20,16 +20,11 @@ class CameraEntity extends Entity
 
 		this.Timeout = 1;
 
-		this.Height = 1200;
-
 		// LERP stuff
-		this.SpringTime = 1;
+		this.SpringTime = 0.5;
 
 		this.InitialRotation = glm.quat.create();
 		this.FinalRotation = glm.quat.create();
-
-		this.InitialHeight = 9000;
-		this.FinalHeight = this.Height;
 
 	}
 
@@ -40,7 +35,7 @@ class CameraEntity extends Entity
 
 		glm.quat.setAxisAngle(this.InitialRotation, [0, 1, 0], 3*Math.PI/4);
 		glm.quat.setAxisAngle(this.FinalRotation, [0, 1, 0], Math.PI);
-		this.core.Render.pipeline.CameraLocation = [0, 0, this.Height];
+		this.core.Render.pipeline.CameraLocation = [0, 0, 1000];
 	}
 
 	PostTick(dt)
@@ -50,9 +45,6 @@ class CameraEntity extends Entity
 		{
 			let t = Math.min(1.0, this.core.GetElapsedTime()/this.SpringTime);
 			glm.quat.lerp(this.core.Render.pipeline.CameraRotation, this.InitialRotation, this.FinalRotation, t);
-
-			this.Height = this.InitialHeight + (this.FinalHeight-this.InitialHeight) * t;
-			this.core.Render.pipeline.CameraLocation = [0, 0, this.Height];
 			return;
 		}
 
