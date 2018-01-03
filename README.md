@@ -3,8 +3,5 @@ A simple 2D WebGL game
 
 ### Setup
 `npm install`
-
-## Helpful Atom Plugins
-- git-plus
-- file-icons
-- minimap
+### Demo
+[Link](https://khalidaleem.com/projects/WebGL-Cursor-Storm/dist/)
