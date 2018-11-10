@@ -1,7 +1,7 @@
 # Cursor Storm / Ship Game
 A reasonably complicated 2D WebGL game.
 Designed to be extendable using an entity-component heirarchy.
-Creating a custom enemy or ship is incredibly easy using inherance.
+Creating a custom enemy or ship is incredibly easy using inheritance.
 
 ### Setup
 `npm install`
